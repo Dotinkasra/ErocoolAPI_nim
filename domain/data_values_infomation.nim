@@ -19,7 +19,7 @@ discard """
 
 #日本語タイトル処理
 type JaTitle* = ref object
-  value : string
+  value: string
 
 proc new*(_: JaTitle, n: string): JaTitle =
   return JaTitle(
@@ -32,7 +32,7 @@ proc `$`*(self: JaTitle): string =
 
 #英語タイトル処理
 type EnTitle* = ref object
-  value : string
+  value: string
   
 proc new*(_: EnTitle, n: string): EnTitle =
   return EnTitle(
@@ -44,7 +44,7 @@ proc `$`*(self: EnTitle): string =
 
 #投稿日処理
 type UploadDat* = ref object
-  value : string
+  value: string
   
 proc new*(_: UploadDat, n: string): UploadDat =
   return UploadDat(
@@ -56,7 +56,7 @@ proc `$`*(self: UploadDat): string =
 
 #言語処理
 type Lang* = ref object
-  value : string
+  value: string
   
 proc new*(_: Lang, n: string): Lang =
   return Lang(
@@ -68,7 +68,7 @@ proc `$`*(self: Lang): string =
 
 #サムネイル処理
 type Thumbnail* = ref object
-  value : string
+  value: string
   
 proc new*(_: Thumbnail, n: string): Thumbnail =
   return Thumbnail(
@@ -80,7 +80,7 @@ proc `$`*(self: Thumbnail): string =
 
 #URL処理
 type Url* = ref object
-  value : string
+  value: string
   
 proc new*(_: Url, n: string): Url =
   return Url(
@@ -92,7 +92,7 @@ proc `$`*(self: Url): string =
 
 #作者処理
 type Artists* = ref object
-  value : seq[string]
+  value: seq[string]
   
 proc new*(_: Artists, n: seq[string]): Artists =
   return Artists(
@@ -104,7 +104,7 @@ proc `$`*(self: Artists): seq[string] =
 
 #サークル処理
 type Groups* = ref object
-  value : seq[string]
+  value: seq[string]
   
 proc new*(_: Groups, n: seq[string]): Groups =
   return Groups(
@@ -116,7 +116,7 @@ proc `$`*(self: Groups): seq[string] =
 
 #原作処理
 type Parodies* = ref object
-  value : seq[string]
+  value: seq[string]
   
 proc new*(_: Parodies, n: seq[string]): Parodies =
   return Parodies(
@@ -128,7 +128,7 @@ proc `$`*(self: Parodies): seq[string] =
 
 #サークル処理
 type Tags* = ref object
-  value : seq[string]
+  value: seq[string]
   
 proc new*(_: Tags, n: seq[string]): Tags =
   return Tags(
@@ -140,7 +140,7 @@ proc `$`*(self: Tags): seq[string] =
 
 #画像処理
 type ImageList* = ref object
-  value : seq[string]
+  value: seq[string]
   
 proc new*(_: ImageList, n: seq[string]): ImageList =
   return ImageList(
@@ -152,11 +152,11 @@ proc `$`*(self: ImageList): seq[string] =
 
 #ページ数処理
 type TotalPages* = ref object
-  value : int
+  value: int
   
-proc new*(_: TotalPages, n: ImageList): TotalPages =
+proc new*(_: TotalPages, n: int): TotalPages =
   return TotalPages(
-    value: len(n.value)
+    value: n
   )
 
 proc `$`*(self: TotalPages): int =
