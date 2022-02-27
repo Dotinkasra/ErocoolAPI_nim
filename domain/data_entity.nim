@@ -2,47 +2,46 @@ import
     data_values_infomation
 
 type Data* = ref object
-    jaTitle : JaTitle
-    enTitle : EnTitle
-    uploadDat : UploadDat
-    lang : Lang
-    thumbnail : Thumbnail
-    url : Url
-    artists : Artists
-    groups : Groups
-    parodies : Parodies
-    tags : Tags
-    imageList : ImageList
-    totalPages : TotalPages
+    jaTitle: JaTitle
+    enTitle: EnTitle
+    uploadDat: UploadDat
+    lang: Lang
+    thumbnail: Thumbnail
+    url: Url
+    artists: Artists
+    groups: Groups
+    parodies: Parodies
+    tags: Tags
+    imageList: ImageList
+    totalPages: TotalPages
 
 proc new*(
     _:type Data,
-    jaTitle : JaTitle,
-    enTitle : EnTitle,
-    uploadDat : UploadDat,
-    lang : Lang,
-    thumbnail : Thumbnail,
-    url : Url,
-    artists : Artists,
-    groups : Groups,
-    parodies : Groups,
-    tags : Tags,
-    imageList : ImageList,
-    totalPages : TotalPages
+    jaTitle: JaTitle,
+    enTitle: EnTitle,
+    uploadDat: UploadDat,
+    lang: Lang,
+    thumbnail: Thumbnail,
+    url: Url,
+    artists: Artists,
+    groups: Groups,
+    parodies: Groups,
+    tags: Tags,
+    imageList: ImageList
 ): Data =
     return Data(
-        jaTitle : JaTitle,
-        enTitle : EnTitle,
-        uploadDat : UploadDat,
-        lang : Lang,
-        thumbnail : Thumbnail,
-        url : Url,
-        artists : Artists,
-        groups : Groups,
-        parodies : Groups,
-        tags : Tags,
-        imageList : ImageList,
-        totalPages : len(imageList)
+        jaTitle: JaTitle,
+        enTitle: EnTitle,
+        uploadDat: UploadDat,
+        lang: Lang,
+        thumbnail: Thumbnail,
+        url: Url,
+        artists: Artists,
+        groups: Groups,
+        parodies: Groups,
+        tags: Tags,
+        imageList: ImageList,
+        totalPages: len(imageList)
     )
 
 proc jaTitle*(self: Data): JaTitle =
