@@ -2,26 +2,11 @@ import
   random,
   strutils
 
-discard """
-  jaTitle : string
-  enTitle : string
-  uploadDat : string
-  lang : string
-  thumbnail : string
-  url : string
-  artists : seq[string]
-  groups : seq[string]
-  parodies : seq[string]
-  tags : seq[string]
-  imageList : seq[string]
-  totalPages : int
-"""
-
 #日本語タイトル処理
 type JaTitle* = ref object
   value: string
 
-proc new*(_: JaTitle, n: string): JaTitle =
+proc new*(_: type JaTitle, n: string): JaTitle =
   return JaTitle(
     value: if len(n) > 0: n else: intToStr(rand(int.high)) 
   )
@@ -29,12 +14,11 @@ proc new*(_: JaTitle, n: string): JaTitle =
 proc `$`*(self: JaTitle): string =
   return self.value
 
-
 #英語タイトル処理
 type EnTitle* = ref object
   value: string
   
-proc new*(_: EnTitle, n: string): EnTitle =
+proc new*(_: type EnTitle, n: string): EnTitle =
   return EnTitle(
     value: if len(n) > 0: n else: intToStr(rand(int.high)) 
   )
@@ -46,7 +30,7 @@ proc `$`*(self: EnTitle): string =
 type UploadDat* = ref object
   value: string
   
-proc new*(_: UploadDat, n: string): UploadDat =
+proc new*(_: type UploadDat, n: string): UploadDat =
   return UploadDat(
     value: n
   )
@@ -58,7 +42,7 @@ proc `$`*(self: UploadDat): string =
 type Lang* = ref object
   value: string
   
-proc new*(_: Lang, n: string): Lang =
+proc new*(_: type Lang, n: string): Lang =
   return Lang(
     value: n
   )
@@ -70,7 +54,7 @@ proc `$`*(self: Lang): string =
 type Thumbnail* = ref object
   value: string
   
-proc new*(_: Thumbnail, n: string): Thumbnail =
+proc new*(_: type Thumbnail, n: string): Thumbnail =
   return Thumbnail(
     value: n
   )
@@ -82,7 +66,7 @@ proc `$`*(self: Thumbnail): string =
 type Url* = ref object
   value: string
   
-proc new*(_: Url, n: string): Url =
+proc new*(_: type Url, n: string): Url =
   return Url(
     value: n
   )
@@ -94,70 +78,70 @@ proc `$`*(self: Url): string =
 type Artists* = ref object
   value: seq[string]
   
-proc new*(_: Artists, n: seq[string]): Artists =
+proc new*(_: type Artists, n: seq[string]): Artists =
   return Artists(
     value: n
   )
 
-proc `$`*(self: Artists): seq[string] =
+proc value*(self: Artists): seq[string] =
   return self.value
 
 #サークル処理
 type Groups* = ref object
   value: seq[string]
   
-proc new*(_: Groups, n: seq[string]): Groups =
+proc new*(_: type Groups, n: seq[string]): Groups =
   return Groups(
     value: n
   )
 
-proc `$`*(self: Groups): seq[string] =
+proc value*(self: Groups): seq[string] =
   return self.value
 
 #原作処理
 type Parodies* = ref object
   value: seq[string]
   
-proc new*(_: Parodies, n: seq[string]): Parodies =
+proc new*(_: type Parodies, n: seq[string]): Parodies =
   return Parodies(
     value: n
   )
 
-proc `$`*(self: Parodies): seq[string] =
+proc value*(self: Parodies): seq[string] =
   return self.value
 
 #サークル処理
 type Tags* = ref object
   value: seq[string]
   
-proc new*(_: Tags, n: seq[string]): Tags =
+proc new*(_: type Tags, n: seq[string]): Tags =
   return Tags(
     value: n
   )
 
-proc `$`*(self: Tags): seq[string] =
+proc value*(self: Tags): seq[string] =
   return self.value
 
 #画像処理
 type ImageList* = ref object
   value: seq[string]
   
-proc new*(_: ImageList, n: seq[string]): ImageList =
+proc new*(_: type ImageList, n: seq[string]): ImageList =
   return ImageList(
     value: n
   )
 
-proc `$`*(self: ImageList): seq[string] =
+proc value*(self: ImageList): seq[string] =
   return self.value
 
 #ページ数処理
 type TotalPages* = ref object
   value: int
   
-proc new*(_: TotalPages, n: int): TotalPages =
+proc new*(_: type TotalPages, n: int): TotalPages =
   return TotalPages(
     value: n
   )
 
-proc `$`*(self: TotalPages): int =
+proc value*(self: TotalPages): int =
   return self.value
