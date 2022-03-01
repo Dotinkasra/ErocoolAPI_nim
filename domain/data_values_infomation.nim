@@ -1,6 +1,7 @@
 import 
   random,
-  strutils
+  strutils,
+  options
 
 #日本語タイトル処理
 type JaTitle* = ref object
@@ -27,15 +28,15 @@ proc `$`*(self: EnTitle): string =
   return self.value
 
 #投稿日処理
-type UploadDat* = ref object
+type UploadDate* = ref object
   value: string
   
-proc new*(_: type UploadDat, n: string): UploadDat =
-  return UploadDat(
+proc new*(_: type UploadDate, n: string): UploadDate =
+  return UploadDate(
     value: n
   )
 
-proc `$`*(self: UploadDat): string =
+proc `$`*(self: UploadDate): string =
   return self.value
 
 #言語処理
@@ -145,3 +146,10 @@ proc new*(_: type TotalPages, n: int): TotalPages =
 
 proc value*(self: TotalPages): int =
   return self.value
+
+#ダウンロード引数処理
+type DownloadOption* = object
+  absolutePath*: string
+  directoryName*: string
+  start*: int
+  last*: Option[int]
