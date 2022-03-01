@@ -3,12 +3,13 @@ import
   options,
   os,
   httpclient,
-  re
+  nre,
+  strformat
 
 type Data* = ref object
   jaTitle*: JaTitle
   enTitle*: EnTitle
-  uploadDat*: UploadDat
+  uploadDate*: UploadDate
   lang*: Lang
   thumbnail*: Thumbnail
   url*: Url
@@ -19,56 +20,58 @@ type Data* = ref object
   imageList*: ImageList
   totalPages*: int
 
-proc new*(
-  _:type Data,
-  jaTitle: JaTitle,
-  enTitle: EnTitle,
-  uploadDat: UploadDat,
-  lang: Lang,
-  thumbnail: Thumbnail,
-  url: Url,
-  artists: Artists,
-  groups: Groups,
-  parodies: Parodies,
-  tags: Tags,
-  imageList: ImageList,
-  totalPages: int
-): Data =
-  return Data(
-    jaTitle = jaTitle,
-    enTitle = enTitle,
-    uploadDat = uploadDat,
-    lang = lang,
-    thumbnail = thumbnail,
-    url = url,
-    artists = artists,
-    groups = groups,
-    parodies = parodies,
-    tags = tags,
-    imageList = imageList,
-  )
+proc new*(_:type Data,): Data = return Data()
 
 proc download*(
   self: Data,
-  absolutePath: string = "./", 
-  directoryName: string = "", 
-  start: int = 1, 
-  last = none(int)
+  dlOption: DownloadOption
 ) =
+  let absolutePath: string = dlOption.absolutePath
+  let directoryName: string = dlOption.directoryName
+  let start: int = dlOption.start
+  let last = if dlOption.last.isSome: dlOption.last.get() else: self.totalPages
+
   let path: string = if absolutePath != "./": absolutePath else: "./"
   let name: string = if directoryName != "": directoryName else: self.jaTitle.`$`
   let saveDir: string = os.joinPath(path, name)
   if not saveDir.dirExists:
     os.createDir(saveDir)
-  let last = if last.isSome: last.get() else: self.totalPages
+  
   for i in start - 1..last - 1:
-    let urlInFilename: seq[string] = self.imageList.value[i].findAll(re"http.://.*/(.*jpg|.*png)")
-    if len(urlInFilename) == 0: continue
-    let fileName: string = "hcooldl_" & urlInFilename[0]
     let img = newHttpClient().getContent(self.imageList.value[i])
-    let f: File = open(fileName, FileMode.fmWrite)
-    f.write img
-    close(f)
+    let urlInFilename: RegexMatch = self.imageList.value[i].find(re"""http.://.*/(.*|.*png)""").get
+    if len(urlInFilename.captures.toSeq()) > 0:
+      let fileName: string = "hcooldl_" & urlInFilename.captures[0]
+      let f: File = open(os.joinPath(saveDir, fileName), FileMode.fmWrite)
+      f.write img
+      close(f)
+
+proc info*(self: Data) =
+  echo fmt"""
+    -------Infomation-------
+    【LANGUAGE】
+    {self.lang.`$`}
+    【URL】
+    {self.url.`$`}
+    【JA_TITLE】
+    {self.jaTitle.`$`}
+    【EN_TITLE】
+    {self.enTitle.`$`}
+    【UPLOAD_DATE】
+    {self.uploadDate.`$`}
+    【ARTISTS】
+    {self.artists.value}
+    【GROUPS】
+    {self.groups.value}
+    【PARODIES】
+    {self.parodies.value}
+    【TAGS】
+    {self.tags.value}
+    【PAGE_COUNT】
+    {$self.total_pages}
+    【THUMBNAIL】
+    {self.thumbnail.`$`}
+    """
 
 proc jaTitle*(self: Data): JaTitle =
   return self.jaTitle
@@ -76,8 +79,8 @@ proc jaTitle*(self: Data): JaTitle =
 proc enTitle*(self: Data): EnTitle =
   return self.enTitle
 
-proc uploadDat*(self: Data): UploadDat =
-  return self.uploadDat
+proc uploadDate*(self: Data): UploadDate =
+  return self.uploadDate
 
 proc lang*(self: Data): Lang =
   return self.lang
