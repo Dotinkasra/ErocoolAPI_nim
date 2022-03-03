@@ -5,7 +5,7 @@ author        = "Dotinkasra"
 description   = "Download erotic manga."
 license       = "MIT"
 srcDir        = "src"
-bin           = @["ErocoolAPI"]
+bin           = @["erocoolAPI"]
 
 
 # Dependencies
