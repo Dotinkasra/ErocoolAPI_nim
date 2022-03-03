@@ -1,38 +1,32 @@
 import
   options,
-  application/dougle,
-  cligen,
-  nre
+  application/scraper,
+  domain/data_entity,
+  cligen
 
-proc optionParser(
+proc mangaDownload(
   url: string,
   start: int = 1,
   last: int = -1,
   output: string = "./",
-  name: string = "",
-  args: seq[string]
+  name: string = ""
 ) =
   let lastPageNum: Option[int] = if last > 0: some(last) else: none(int)
-  if url.contains(re"""https://dougle\.one/.*"""):
-    let d = Dougle.new(
-      url = url
-    )
-    d.setXml()
-    d.extractData()
-    d.download(
-      d.genDlOption(
+  let scraper = Scraper.new(url = url)
+  let data: Data = scraper.getData()
+  scraper.download(
+    data,
+    scraper.genDlOption(
         start = start,
         last = lastPageNum,
         absolutePath = output,
         directoryName = name
-      )
     )
-  else:
-    echo "no..."
+  )
 
-proc main() =
+when isMainModule:
   dispatch(
-    optionParser,
+    mangaDownload,
     short = {
       "start": 's',
       "last": 'e',
@@ -47,6 +41,3 @@ proc main() =
       "name": "Directory name"
     }
   )
-
-when isMainModule:
-  main()
