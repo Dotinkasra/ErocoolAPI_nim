@@ -78,3 +78,37 @@ proc imageList*(self: Data): ImageList =
 
 proc totalPages*(self: Data): int =
   return len(self.imageList.value)
+
+proc setJatitle*(self: Data, n: string) =
+  self.jaTitle = JaTitle.new(n)
+
+proc setEnTitle*(self: Data, n: string) =
+  self.enTitle = EnTitle.new(n)
+
+proc setUploadDate*(self: Data, n: string) =
+  self.uploadDate = UploadDate.new(n)
+
+proc setLang*(self: Data, n: string) =
+  self.lang = Lang.new(n)
+
+proc setThumbnail*(self: Data, n: string) =
+  self.thumbnail = Thumbnail.new(n)
+
+proc setArtists*(self: Data, n: seq[string]) =
+  self.artists = Artists.new(n)
+
+proc setGroups*(self: Data, n: seq[string]) =
+  self.groups = Groups.new(n)
+
+proc setParodies*(self: Data, n: seq[string]) =
+  self.parodies = Parodies.new(n)
+
+proc setTags*(self: Data, n: seq[string]) =
+  self.tags = Tags.new(n)
+
+proc setImageList*(self: Data, n: seq[string]) =
+  self.imageList = ImageList.new(n)
+  self.totalPages = len(n)
+
+proc setUrl*(self: Data, n: string) =
+  self.url = Url.new(n)
