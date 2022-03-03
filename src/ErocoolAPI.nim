@@ -4,6 +4,17 @@ import
   domain/data_entity,
   cligen
 
+proc newScraper*(
+  url: string
+): Scraper =
+  return Scraper.new(url = url)
+
+proc newScraperWithUa*(
+  url: string,
+  ua: string
+): Scraper =
+  return Scraper.new(ua = ua, url = url)
+
 proc mangaDownload(
   url: string,
   start: int = 1,
