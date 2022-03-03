@@ -4,7 +4,6 @@ import
   htmlparser,
   xmltree,
   streams,
-  asyncdispatch,
   ../domain/data_entity,
   ../domain/data_values_infomation,
   downloader
@@ -27,15 +26,7 @@ proc new*(
     url: url,
     data: d
   )
-discard """
-proc download*(
-  self: Scraper,
-  dlOption: DownloadOption
-) =
-  self.data.download(
-    dlOption = dlOption
-  )
-"""
+
 proc download*(
   self: Scraper,
   dlOption: DownloadOption
