@@ -5,10 +5,11 @@ author        = "Dotinkasra"
 description   = "Download erotic manga."
 license       = "MIT"
 srcDir        = "src"
-bin           = @["ErocoolAPi"]
+bin           = @["ErocoolAPI"]
 
 
 # Dependencies
 
 requires "nim >= 1.6.0"
 requires "nimquery"
+requires "cligen"
