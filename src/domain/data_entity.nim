@@ -19,32 +19,9 @@ type Data* = ref object
   tags*: Tags
   imageList*: ImageList
   totalPages*: int
+  saveImg*: proc(url: string, pathWithImgname: string)
 
 proc new*(_:type Data,): Data = return Data()
-
-proc download*(
-  self: Data,
-  dlOption: DownloadOption
-) =
-  let absolutePath: string = dlOption.absolutePath
-  let directoryName: string = dlOption.directoryName
-  let start: int = dlOption.start
-  let last = if dlOption.last.isSome: dlOption.last.get() else: self.totalPages
-
-  let path: string = if absolutePath != "./": absolutePath else: "./"
-  let name: string = if directoryName != "": directoryName else: self.jaTitle.`$`
-  let saveDir: string = os.joinPath(path, name)
-  if not saveDir.dirExists:
-    os.createDir(saveDir)
-  
-  for i in start - 1..last - 1:
-    let img = newHttpClient().getContent(self.imageList.value[i])
-    let urlInFilename: RegexMatch = self.imageList.value[i].find(re"""http.://.*/(.*|.*png)""").get
-    if len(urlInFilename.captures.toSeq()) > 0:
-      let fileName: string = "hcooldl_" & urlInFilename.captures[0]
-      let f: File = open(os.joinPath(saveDir, fileName), FileMode.fmWrite)
-      f.write img
-      close(f)
 
 proc info*(self: Data) =
   echo fmt"""
