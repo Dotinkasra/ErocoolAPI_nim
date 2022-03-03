@@ -1,5 +1,5 @@
 import 
-  future,
+  sugar,
   options,
   xmltree,
   strutils,
@@ -20,7 +20,7 @@ proc new*(
 proc download*(
   self: Dougle,
   dlOption: DownloadOption
-) = 
+) =
   self.scraper.download(
     dlOption = dlOption
   )
