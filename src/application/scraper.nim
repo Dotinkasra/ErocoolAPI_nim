@@ -4,13 +4,15 @@ import
   htmlparser,
   xmltree,
   streams,
+  asyncdispatch,
   ../domain/data_entity,
-  ../domain/data_values_infomation
+  ../domain/data_values_infomation,
+  downloader
 
 type Scraper* = ref object
   userAgent*: string
-  url: string
-  data: Data
+  url*: string
+  data*: Data
   xml*: XmlNode
 
 proc new*(
@@ -18,20 +20,29 @@ proc new*(
   ua: string = "Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101 Firefox/78.0",
   url: string
 ): Scraper =
+  let d: Data = Data.new()
+  d.url = Url.new(url)
   return Scraper(
     userAgent: ua,
     url: url,
-    data: Data.new()
+    data: d
   )
-
+discard """
 proc download*(
   self: Scraper,
   dlOption: DownloadOption
 ) =
-  echo len(self.data.imageList.value)
   self.data.download(
     dlOption = dlOption
   )
+"""
+proc download*(
+  self: Scraper,
+  dlOption: DownloadOption
+) =
+  let dl: Downloader = Downloader.new(self.data)
+  dl.download(dlOption)
+
 
 proc genDlOption*(
   self: Scraper,
@@ -82,3 +93,6 @@ proc setTags*(self: Scraper, n: seq[string]) =
 proc setImageList*(self: Scraper, n: seq[string]) =
   self.data.imageList = ImageList.new(n)
   self.data.totalPages = len(n)
+
+proc setUrl*(self: Scraper, n: string) =
+  self.data.url = Url.new(n)
