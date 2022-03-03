@@ -51,11 +51,6 @@ proc genDlOption*(
     last: last
   )
 
-proc setXml*(self: Scraper) =
-  let client = newHttpClient()
-  let response = client.get(self.url)
-  self.xml = response.body.newStringStream().parseHtml()
-
 proc getData*(self: Scraper): Data =
   if self.url.contains(re"""https://dougle\.one/.*"""):
     return dougle.extractData(Data.new(), self.xml)
