@@ -16,7 +16,7 @@ proc new*(_: type Downloader, data: Data): Downloader =
   return Downloader(data: data)
 
 proc asyncRequest(self: Downloader, url: string, pathWithImgname: string) {.async.} =
-  let img = await newAsyncHttpClient().getContent(url)
+  let img = newHttpClient().getContent(url)
   let f = openAsync(pathWithImgname, FileMode.fmWrite)
   await f.write(img)
   close(f)
@@ -71,5 +71,5 @@ proc download*(self: Downloader, dlOption: DownloadOption) =
     echo urlInFilename
     if len(urlInFilename.captures.toSeq()) > 0:
       let fileName: string = "hcooldl_" & urlInFilename.captures[0]
-      spawn self.request(url = self.data.imageList.value[i], pathWithImgname = os.joinPath(saveDir, fileName))
+      let v = spawn self.asyncRequest(url = self.data.imageList.value[i], pathWithImgname = os.joinPath(saveDir, fileName))
   sync()
