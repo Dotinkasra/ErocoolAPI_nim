@@ -60,11 +60,11 @@ proc getData*(self: Scraper): Data =
 ## Commandline
 
 ```bash
-erocoolAPI 'https://ja.erocool.com/detail/xxxxxxx.html'
+erocoolAPI --url 'https://ja.erocool.com/detail/xxxxxxx.html'
 ```
 
 ```bash
-erocoolAPI 'https://ja.erocool.com/detail/xxxxxxx.html' -s 5 -e 10 -o ~/Downloads/Mangas -n 'xxxxx'
+erocoolAPI --url 'https://ja.erocool.com/detail/xxxxxxx.html' -s 5 -e 10 -o ~/Downloads/Mangas -n 'xxxxx'
 ```
 
 

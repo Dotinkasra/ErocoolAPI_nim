@@ -62,13 +62,13 @@ proc getData*(self: Scraper): Data =
 ## コマンドライン
 
 ```bash
-erocoolAPI 'https://ja.erocool.com/detail/xxxxxxx.html'
+erocoolAPI --url 'https://ja.erocool.com/detail/xxxxxxx.html'
 ```
 
 開始番号、終了番号、保存先、ディレクトリ名が指定できます。
 
 ```bash
-erocoolAPI 'https://ja.erocool.com/detail/xxxxxxx.html' -s 5 -e 10 -o ~/Downloads/Mangas -n 'xxxxx'
+erocoolAPI --url 'https://ja.erocool.com/detail/xxxxxxx.html' -s 5 -e 10 -o ~/Downloads/Mangas -n 'xxxxx'
 ```
 
 その他
