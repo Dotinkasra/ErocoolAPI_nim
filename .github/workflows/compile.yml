@@ -31,10 +31,16 @@ jobs:
       with:
         nim-version: 1.6.0
         
-    - name: Build
+    - name: Linux Build
+      if: ${{ runner.os }} == 'Linux'
       run: |
         nimble build -d:release -d:ssl --threads:on -Y --verbose
         mv erocoolAPI erocoolAPI_${{ runner.os }}${{ steps.create_build.outputs.current_tag }}
+    - name: Windows Build
+      if: ${{ runner.os }} == 'Windows'
+      run: |
+        nimble build -d:release -d:ssl --threads:on -Y --verbose
+        mv erocoolAPI.exe erocoolAPI_${{ runner.os }}${{ steps.create_build.outputs.current_tag }}.exe 
       
     - name: Test
       run: nimble test -d:release -d:ssl --threads:on -Y --verbose
@@ -50,8 +56,9 @@ jobs:
         draft: false
         prerelease: false
         
-    - name: Upload Release Asset
-      id: upload_release_asset 
+    - name: Upload Linux Release Asset
+      id: upload_release_asset
+      if: ${{ runner.os }} == 'Linux'
       uses: actions/upload-release-asset@v1.0.1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -59,4 +66,16 @@ jobs:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
         asset_path: ./erocoolAPI_${{ runner.os }}${{ steps.create_build.outputs.current_tag }}
         asset_name: erocoolAPI_${{ runner.os }}${{ steps.create_build.outputs.current_tag }}
+        asset_content_type: application/octet-stream
+        
+    - name: Upload Windows Release Asset
+      id: upload_release_asset
+      if: ${{ runner.os }} == 'Windows'
+      uses: actions/upload-release-asset@v1.0.1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./erocoolAPI_${{ runner.os }}${{ steps.create_build.outputs.current_tag }}.exe
+        asset_name: erocoolAPI_${{ runner.os }}${{ steps.create_build.outputs.current_tag }}.exe
         asset_content_type: application/octet-stream
