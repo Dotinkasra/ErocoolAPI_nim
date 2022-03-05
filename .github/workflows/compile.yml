@@ -7,7 +7,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-          os: [ubuntu-latest, windows-latest, macosx-latest]
+          os: [ubuntu-latest, windows-latest]
           
     steps:
     - uses: actions/checkout@v1
@@ -17,6 +17,7 @@ jobs:
       with:
         path: ~/.choosenim
         key: ${{ runner.os }}-choosenim-stable
+        
     - name: Cache nimble
       id: cache-nimble
       uses: actions/cache@v1
@@ -26,7 +27,31 @@ jobs:
     - uses: jiro4989/setup-nim-action@v1
       with:
         nim-version: 1.6.0
+        
     - name: Build
       run: nimble build -d:release -d:ssl --threads:on -Y --verbose
+      
     - name: Test
       run: nimble test -d:release -d:ssl --threads:on -Y --verbose
+      
+    - name: Create Release
+      id: create_release
+      uses: actions/create-release@v1.0.0
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ github.ref }}
+        release_name: Release ${{ github.ref }}
+        draft: false
+        prerelease: false
+        
+    - name: Upload Release Asset
+      id: upload_release_asset 
+      uses: actions/upload-release-asset@v1.0.1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./ErocoolAPI.${{ runner.os }}${{ steps.create_build.outputs.current_tag }}.zip
+        asset_name: ErocoolAPI.${{ runner.os }}${{ steps.create_build.outputs.current_tag }}.zip
+        asset_content_type: application/zip
