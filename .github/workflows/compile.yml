@@ -27,6 +27,6 @@ jobs:
       with:
         nim-version: 1.6.0
     - name: Build
-      run: nimble build -d:release -d:ssl --threads:on -Y
+      run: nimble build -d:release -d:ssl --threads:on -Y --verbose
     - name: Test
-      run: nimble test -d:release -d:ssl --threads:on -Y
+      run: nimble test -d:release -d:ssl --threads:on -Y --verbose
