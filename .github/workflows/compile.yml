@@ -29,7 +29,9 @@ jobs:
         nim-version: 1.6.0
         
     - name: Build
-      run: nimble build -d:release -d:ssl --threads:on -Y --verbose
+      run: |
+        nimble build -d:release -d:ssl --threads:on -Y --verbose
+        mv erocoolAPI erocoolAPI_{{ runner.os }}${{ steps.create_build.outputs.current_tag }}
       
     - name: Test
       run: nimble test -d:release -d:ssl --threads:on -Y --verbose
@@ -52,6 +54,6 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./ErocoolAPI.${{ runner.os }}${{ steps.create_build.outputs.current_tag }}.zip
-        asset_name: ErocoolAPI.${{ runner.os }}${{ steps.create_build.outputs.current_tag }}.zip
+        asset_path: ./erocoolAPI_{{ runner.os }}${{ steps.create_build.outputs.current_tag }}
+        asset_name: erocoolAPI_{{ runner.os }}${{ steps.create_build.outputs.current_tag }}
         asset_content_type: application/zip
