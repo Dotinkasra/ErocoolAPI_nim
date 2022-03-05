@@ -57,7 +57,7 @@ jobs:
         prerelease: false
         
     - name: Upload Linux Release Asset
-      id: upload_release_asset
+      id: upload_linux_release_asset
       if: ${{ runner.os }} == 'Linux'
       uses: actions/upload-release-asset@v1.0.1
       env:
@@ -69,7 +69,7 @@ jobs:
         asset_content_type: application/octet-stream
         
     - name: Upload Windows Release Asset
-      id: upload_release_asset
+      id: upload_windows_release_asset
       if: ${{ runner.os }} == 'Windows'
       uses: actions/upload-release-asset@v1.0.1
       env:
