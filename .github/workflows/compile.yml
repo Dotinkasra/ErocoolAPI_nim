@@ -32,12 +32,12 @@ jobs:
         nim-version: 1.6.0
         
     - name: Linux Build
-      if: ${{ runner.os }} == 'Linux'
+      if: runner.os == 'Linux'
       run: |
         nimble build -d:release -d:ssl --threads:on -Y --verbose
         mv erocoolAPI erocoolAPI_${{ runner.os }}${{ steps.create_build.outputs.current_tag }}
     - name: Windows Build
-      if: ${{ runner.os }} == 'Windows'
+      if: runner.os == 'Windows'
       run: |
         nimble build -d:release -d:ssl --threads:on -Y --verbose
         mv erocoolAPI.exe erocoolAPI_${{ runner.os }}${{ steps.create_build.outputs.current_tag }}.exe 
