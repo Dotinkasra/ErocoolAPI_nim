@@ -1,5 +1,4 @@
 import 
-  sugar,
   xmltree,
   strutils,
   nimquery,
@@ -9,9 +8,7 @@ import
   httpclient,
   nre,
   sequtils,
-
   ../domain/data_entity
-
 
 proc asyncRequest*(url: string): Future[seq[string]] {.async.} =
   let img = await newAsyncHttpClient().getContent(url)

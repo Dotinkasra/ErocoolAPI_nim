@@ -1,7 +1,6 @@
 import
   options,
   httpclient,
-  progress,
   asyncfile,
   os,
   nre,
@@ -26,7 +25,6 @@ proc asyncRequest(self: Downloader, url: string, pathWithImgname: string) {.asyn
   except IOError:
     echo "IO error!"
 
-
 proc ndownload*(self: Downloader, dlOption: DownloadOption) =
   let 
     absolutePath: string = dlOption.absolutePath
@@ -44,7 +42,6 @@ proc ndownload*(self: Downloader, dlOption: DownloadOption) =
   for i in start - 1..last - 1:
     #let img = await newAsyncHttpClient().getContent(self.imageList.value[i])
     let urlInFilename: RegexMatch = self.data.imageList.value[i].find(re"""http.://.*/(.*|.*png)""").get
-    echo urlInFilename
     if len(urlInFilename.captures.toSeq()) > 0:
       let fileName: string = "hcooldl_" & urlInFilename.captures[0]
       waitFor self.asyncRequest(url = self.data.imageList.value[i], pathWithImgname = os.joinPath(saveDir, fileName))
@@ -73,11 +70,8 @@ proc download*(self: Downloader, dlOption: DownloadOption) =
   for i in start - 1..last - 1:
     #let img = await newAsyncHttpClient().getContent(self.imageList.value[i])
     let urlInFilename: RegexMatch = self.data.imageList.value[i].find(re"""http.://.*/(.*|.*png)""").get
-    echo urlInFilename
     if len(urlInFilename.captures.toSeq()) > 0:
       let 
         fileName: string = "hcooldl_" & urlInFilename.captures[0]
-      echo fileName
-      let
         v = spawn self.asyncRequest(url = self.data.imageList.value[i], pathWithImgname = os.joinPath(saveDir, fileName))
   sync()
