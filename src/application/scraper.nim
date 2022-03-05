@@ -21,9 +21,10 @@ proc new*(
   ua: string = "Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101 Firefox/78.0",
   url: string
 ): Scraper =
-  let client = newHttpClient()
-  let response = client.get(url)
-  let xml = response.body.newStringStream().parseHtml()
+  let 
+    client = newHttpClient()
+    response = client.get(url)
+    xml = response.body.newStringStream().parseHtml()
   return Scraper(
     userAgent: ua,
     url: url,
