@@ -24,6 +24,8 @@ jobs:
         path: ~/.nimble
         key: ${{ runner.os }}-nimble-stable
     - uses: jiro4989/setup-nim-action@v1
+      with:
+        nim-version: 1.6.0
     - name: Build
       run: nimble build -Y　-d:release -d:ssl --threads:on
     - name: Test
