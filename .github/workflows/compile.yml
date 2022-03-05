@@ -31,7 +31,7 @@ jobs:
     - name: Build
       run: |
         nimble build -d:release -d:ssl --threads:on -Y --verbose
-        mv erocoolAPI erocoolAPI_{{ runner.os }}${{ steps.create_build.outputs.current_tag }}
+        mv erocoolAPI erocoolAPI_${{ runner.os }}${{ steps.create_build.outputs.current_tag }}
       
     - name: Test
       run: nimble test -d:release -d:ssl --threads:on -Y --verbose
