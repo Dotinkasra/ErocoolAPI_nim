@@ -25,6 +25,6 @@ jobs:
         key: ${{ runner.os }}-nimble-stable
     - uses: jiro4989/setup-nim-action@v1
     - name: Build
-      run: nimble build -Y
+      run: nimble build -Y　-d:release -d:ssl --threads:on
     - name: Test
-      run: nimble test -Y
+      run: nimble test -Y　-d:release -d:ssl --threads:on
