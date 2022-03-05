@@ -22,9 +22,11 @@ proc mangaDownload(
   output: string = "./",
   name: string = ""
 ) =
-  let lastPageNum: Option[int] = if last > 0: some(last) else: none(int)
-  let scraper = Scraper.new(url = url)
-  let data: Data = scraper.getData()
+  let 
+    lastPageNum: Option[int] = if last > 0: some(last) else: none(int)
+    scraper = Scraper.new(url = url)
+    data: Data = scraper.getData()
+    
   scraper.download(
     data,
     scraper.genDlOption(

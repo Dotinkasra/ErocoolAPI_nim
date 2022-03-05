@@ -7,6 +7,7 @@ import
   ../domain/data_entity,
   ../domain/data_values_infomation,
   dougle,
+  ehentai,
   nre,
   downloader
 
@@ -53,4 +54,8 @@ proc genDlOption*(
 
 proc getData*(self: Scraper): Data =
   if self.url.contains(re"""https://dougle\.one/.*"""):
+    echo "return Dougle"
     return dougle.extractData(Data.new(), self.xml)
+  elif self.url.contains(re"""https://e-hentai\.org.*"""):
+    echo "return ehentai"
+    return ehentai.extractData(Data.new(), self.xml)
