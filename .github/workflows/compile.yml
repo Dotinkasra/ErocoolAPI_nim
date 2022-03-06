@@ -43,9 +43,10 @@ jobs:
         nimble build -d:release -d:ssl --threads:on -Y --verbose
         powershell Compress-Archive -Path erocoolAPI.exe -DestinationPath erocoolAPI_${{ runner.os }}${{ steps.create_build.outputs.current_tag }}.zip
 
-    - name: Test
-      run: nimble test -d:release -d:ssl --threads:on -Y --verbose
-      
+    - uses: actions/upload-artifact@v2
+      with:
+        name: build-${{ matrix.target }}
+        path: erocoolAPI_${{ runner.os }}${{ steps.create_build.outputs.current_tag }}.zip
   create-release:
     needs: [build]
     runs-on: ubuntu-latest
@@ -59,6 +60,12 @@ jobs:
         release_name: Release ${{ github.ref }}
         draft: false
         prerelease: false
+    - run: |
+        echo '${{ steps.create-release.outputs.upload_url }}' > release_upload_url.txt
+    - uses: actions/upload-artifact@v1
+      with:
+        name: create-release
+        path: release_upload_url.txt
         
   upload-release-asset:
     strategy:
@@ -67,11 +74,20 @@ jobs:
     needs: [create-release]
     runs-on: ubuntu-latest
     steps:
+    - uses: actions/download-artifact@v1
+      with:
+        name: create-release
+    - id: upload-url
+      run: |
+        echo "::set-output name=url::$(cat create-release/release_upload_url.txt)"
+    - uses: actions/download-artifact@v1
+      with:
+        name: build-${{ matrix.target }}
     - uses: actions/upload-release-asset@v1.0.1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        upload_url: ${{ steps.upload-url.outputs.url }}
         asset_path: ./erocoolAPI_${{ runner.os }}${{ steps.create_build.outputs.current_tag }}.zip
         asset_name: erocoolAPI_${{ runner.os }}${{ steps.create_build.outputs.current_tag }}.zip
         asset_content_type: application/zip
