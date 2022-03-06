@@ -1,9 +1,7 @@
 import
     unittest, 
     ../src/erocoolAPI,
-    ../src/application/scraper,
-    ../src/domain/data_values_infomation,
-    options
+    ../src/application/scraper
 
 test "test_1":
     #let erocool = newScraper("https://dougle.one/archives/89592")
