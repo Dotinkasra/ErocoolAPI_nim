@@ -11,5 +11,6 @@ bin           = @["erocoolAPI"]
 # Dependencies
 
 requires "nim >= 1.6.0"
-requires "nimquery"
-requires "cligen"
+requires "nimquery >= 1.2.3"
+requires "cligen >= 1.5.21"
+requires "puppy >= 1.5.3"
