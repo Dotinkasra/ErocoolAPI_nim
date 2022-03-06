@@ -10,9 +10,6 @@ import
   sequtils,
   ../domain/data_entity
 
-proc asyncRequest*(url: string): Future[seq[string]] {.async.} =
-  let img = await newAsyncHttpClient().getContent(url)
-
 proc getViewerLink(url: string): Future[seq[string]] {.async.} =
   let 
     content = newHttpClient().get(url)
