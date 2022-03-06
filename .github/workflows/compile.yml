@@ -88,6 +88,6 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.upload-url.outputs.url }}
-        asset_path: ./erocoolAPI_${{ runner.os }}${{ steps.create_build.outputs.current_tag }}.zip
-        asset_name: erocoolAPI_${{ runner.os }}${{ steps.create_build.outputs.current_tag }}.zip
+        asset_path: ./erocoolAPI_${{ matrix.target }}${{ steps.create_build.outputs.current_tag }}.zip
+        asset_name: erocoolAPI_${{ matrix.target }}${{ steps.create_build.outputs.current_tag }}.zip
         asset_content_type: application/zip
