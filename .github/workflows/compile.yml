@@ -36,6 +36,8 @@ jobs:
       run: |
         nimble build -d:release -d:ssl --threads:on -Y --verbose
         zip --junk-paths erocoolAPI_${{ runner.os }}.zip erocoolAPI 
+        ls
+        pwd
 
     - name: Windows Build
       if: runner.os == 'Windows'
