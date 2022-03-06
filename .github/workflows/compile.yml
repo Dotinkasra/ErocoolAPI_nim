@@ -10,7 +10,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-          os: [ubuntu-latest, windows-latest, macos-latest]
+          os: [ubuntu-latest, windows-latest]
           
     steps:
     - uses: actions/checkout@v1
@@ -42,12 +42,6 @@ jobs:
       run: |
         nimble build -d:release -d:ssl --threads:on -Y --verbose
         powershell Compress-Archive -Path erocoolAPI.exe -DestinationPath erocoolAPI_${{ runner.os }}${{ steps.create_build.outputs.current_tag }}.zip
-
-    - name: macOS Build
-      if: runner.os == 'macOS'
-      run: |
-        nimble build -d:release -d:ssl --threads:on -Y --verbose
-        zip --junk-paths erocoolAPI_${{ runner.os }}${{ steps.create_build.outputs.current_tag }}.zip erocoolAPI 
 
     - name: Test
       run: nimble test -d:release -d:ssl --threads:on -Y --verbose
