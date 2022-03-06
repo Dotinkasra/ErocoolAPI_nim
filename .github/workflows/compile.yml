@@ -57,7 +57,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - id: create-release
-      uses: action/cre
       uses: actions/create-release@v1.0.0
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
