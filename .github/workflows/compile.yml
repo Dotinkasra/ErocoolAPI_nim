@@ -63,7 +63,7 @@ jobs:
   upload-release-asset:
     strategy:
       matrix:
-          os: [ubuntu-latest, windows-latest, macos-latest]
+          os: [ubuntu-latest, windows-latest]
     needs: [create-release]
     runs-on: ubuntu-latest
     steps:
