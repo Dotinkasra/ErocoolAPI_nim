@@ -35,7 +35,7 @@ jobs:
       if: runner.os == 'Linux'
       run: |
         nimble build -d:release -d:ssl --threads:on -Y --verbose
-        zip --junk-paths erocoolAPI erocoolAPI_${{ runner.os }}${{ steps.create_build.outputs.current_tag }}.zip
+        zip --junk-paths erocoolAPI_${{ runner.os }}${{ steps.create_build.outputs.current_tag }}.zip erocoolAPI 
 
     - name: Windows Build
       if: runner.os == 'Windows'
@@ -47,7 +47,7 @@ jobs:
       if: runner.os == 'macOS'
       run: |
         nimble build -d:release -d:ssl --threads:on -Y --verbose
-        zip --junk-paths erocoolAPI erocoolAPI_${{ runner.os }}${{ steps.create_build.outputs.current_tag }}.zip
+        zip --junk-paths erocoolAPI_${{ runner.os }}${{ steps.create_build.outputs.current_tag }}.zip erocoolAPI 
 
     - name: Test
       run: nimble test -d:release -d:ssl --threads:on -Y --verbose
