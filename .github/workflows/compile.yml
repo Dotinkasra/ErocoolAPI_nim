@@ -10,7 +10,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-          os: [ubuntu-latest, windows-latest]
+          os: [ubuntu-latest, windows-latest, macos-latest]
           
     steps:
     - uses: actions/checkout@v1
@@ -35,19 +35,29 @@ jobs:
       if: runner.os == 'Linux'
       run: |
         nimble build -d:release -d:ssl --threads:on -Y --verbose
-        mv erocoolAPI erocoolAPI_${{ runner.os }}${{ steps.create_build.outputs.current_tag }}
+        zip --junk-paths erocoolAPI erocoolAPI_${{ runner.os }}${{ steps.create_build.outputs.current_tag }}.zip
+
     - name: Windows Build
       if: runner.os == 'Windows'
       run: |
         nimble build -d:release -d:ssl --threads:on -Y --verbose
-        mv erocoolAPI.exe erocoolAPI_${{ runner.os }}${{ steps.create_build.outputs.current_tag }}.exe 
-      
+        powershell Compress-Archive -Path erocoolAPI.exe -DestinationPath erocoolAPI_${{ runner.os }}${{ steps.create_build.outputs.current_tag }}.zip
+
+    - name: macOS Build
+      if: runner.os == 'macOS'
+      run: |
+        nimble build -d:release -d:ssl --threads:on -Y --verbose
+        zip --junk-paths erocoolAPI erocoolAPI_${{ runner.os }}${{ steps.create_build.outputs.current_tag }}.zip
+
     - name: Test
       run: nimble test -d:release -d:ssl --threads:on -Y --verbose
       
-    - name: Create Release
-      id: create_release
-      if: runner.os == 'Linux'
+  create-release:
+    needs: [build]
+    runs-on: ubuntu-latest
+    steps:
+    - id: create-release
+      uses: action/cre
       uses: actions/create-release@v1.0.0
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -57,26 +67,18 @@ jobs:
         draft: false
         prerelease: false
         
-    - name: Upload Linux Release Asset
-      id: upload_linux_release_asset
-      if: runner.os == 'Linux'
-      uses: actions/upload-release-asset@v1.0.1
+  upload-release-asset:
+    strategy:
+      matrix:
+          os: [ubuntu-latest, windows-latest, macos-latest]
+    needs: [create-release]
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/upload-release-asset@v1.0.1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./erocoolAPI_${{ runner.os }}${{ steps.create_build.outputs.current_tag }}
-        asset_name: erocoolAPI_${{ runner.os }}${{ steps.create_build.outputs.current_tag }}
-        asset_content_type: application/octet-stream
-        
-    - name: Upload Windows Release Asset
-      id: upload_windows_release_asset
-      if: runner.os == 'Windows'
-      uses: actions/upload-release-asset@v1.0.1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./erocoolAPI_${{ runner.os }}${{ steps.create_build.outputs.current_tag }}.exe
-        asset_name: erocoolAPI_${{ runner.os }}${{ steps.create_build.outputs.current_tag }}.exe
-        asset_content_type: application/octet-stream
+        asset_path: ./erocoolAPI_${{ runner.os }}${{ steps.create_build.outputs.current_tag }}.zip
+        asset_name: erocoolAPI_${{ runner.os }}${{ steps.create_build.outputs.current_tag }}.zip
+        asset_content_type: application/zip
