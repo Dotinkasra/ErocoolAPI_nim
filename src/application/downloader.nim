@@ -1,6 +1,6 @@
 import
   options,
-  puppy,
+  httpclient,
   asyncfile,
   os,
   nre,
@@ -17,10 +17,7 @@ proc new*(_: type Downloader, data: Data): Downloader =
 
 proc asyncRequest(self: Downloader, url: string, pathWithImgname: string) {.async.} =
   let 
-    img = fetch(
-      url,
-      headers = @[Header(key: "User-Agent", value: "Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101 Firefox/78.0")]
-    )
+    img = newHttpClient().getContent(url)
     f = openAsync(pathWithImgname, FileMode.fmWrite)
   try:
     await f.write(img)

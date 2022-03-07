@@ -1,6 +1,6 @@
 import
   options,
-  puppy,
+  httpclient,
   htmlparser,
   xmltree,
   streams,
@@ -22,11 +22,9 @@ proc new*(
   url: string
 ): Scraper =
   let 
-    response = fetch(
-        url,
-        headers = @[Header(key: "User-Agent", value: ua)]
-    )
-    xml = response.newStringStream().parseHtml()
+    client = newHttpClient()
+    response = client.get(url)
+    xml = response.body.newStringStream().parseHtml()
   return Scraper(
     userAgent: ua,
     url: url,

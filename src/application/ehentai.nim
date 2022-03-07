@@ -5,18 +5,15 @@ import
   htmlparser,
   streams,
   asyncdispatch,
-  puppy,
+  httpclient,
   nre,
   sequtils,
   ../domain/data_entity
 
 proc getViewerLink(url: string): Future[seq[string]] {.async.} =
   let 
-    content = fetch(
-        url,
-        headers = @[Header(key: "User-Agent", value: "Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101 Firefox/78.0")]
-    )
-    xml = content.newStringStream().parseHtml()
+    content = newHttpClient().get(url)
+    xml = content.body.newStringStream().parseHtml()
     imagePageDiv = xml.querySelectorAll("div.gdtm")
   var 
     retFuture = newFuture[seq[string]]("connect")
@@ -32,14 +29,10 @@ proc getViewerLink(url: string): Future[seq[string]] {.async.} =
 
 proc getImageLink(url: string): Future[string] {.async.} =
   let
-    content = fetch(
-        url,
-        headers = @[Header(key: "User-Agent", value: "Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101 Firefox/78.0")]
-    )
-    xml = content.newStringStream().parseHtml()
+    content = newHttpClient().get(url)
+    xml = content.body.newStringStream().parseHtml()
     imageTag = xml.querySelector("#img").attr("src")
   return imageTag
-
 
 proc loopHandle(allPages: XmlNode): Future[seq[string]] {.async.} =
   var 
