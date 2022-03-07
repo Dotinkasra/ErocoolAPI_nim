@@ -87,3 +87,9 @@ Options:
   -n=, --name=    string  ""        Directory name
 ```
 
+### Windowsで利用する場合
+
+以下のサイトからmingwをインストールし、環境変数を設定する必要があります。
+https://nim-lang.org/install_windows.html
+
+もしくは、Linux向けバイナリをWSL上で実行する方法がおすすめです。

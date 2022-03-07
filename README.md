@@ -82,3 +82,9 @@ Options:
   -n=, --name=    string  ""        Directory name
 ```
 
+### For Windows users.
+
+You will need to install mingw from the following site and set the environment variables.
+https://nim-lang.org/install_windows.html
+
+Alternatively, we recommend running binaries for Linux on WSLs.
