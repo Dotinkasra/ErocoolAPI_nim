@@ -4,15 +4,18 @@ import
   domain/data_entity,
   cligen
 
+## ErocoolAPI doc
 proc newScraper*(
   url: string
 ): Scraper =
+  ## Obtains a Scraper object without specifying a User Agent.
   return Scraper.new(url = url)
 
 proc newScraperWithUa*(
   url: string,
   ua: string
 ): Scraper =
+  ## Obtains a Scraper object by specifying a User Agent.
   return Scraper.new(ua = ua, url = url)
 
 proc mangaDownload(
@@ -22,6 +25,7 @@ proc mangaDownload(
   output: string = "./",
   name: string = ""
 ) =
+  ## Download the cartoon at the URL set in the constructor of the Scraper object.
   let 
     lastPageNum: Option[int] = if last > 0: some(last) else: none(int)
     scraper = newScraper(url = url)
