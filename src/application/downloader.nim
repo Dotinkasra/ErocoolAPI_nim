@@ -40,10 +40,10 @@ proc download*(self: Downloader, dlOption: DownloadOption) =
     os.createDir(saveDir)
 
   for i in start - 1..last - 1:
-    #let img = await newAsyncHttpClient().getContent(self.imageList.value[i])
-    let urlInFilename: RegexMatch = self.data.imageList.value[i].find(re"""http.://.*/(.*|.*png)""").get
-    if len(urlInFilename.captures.toSeq()) > 0:
-      let 
-        fileName: string = "hcooldl_" & urlInFilename.captures[0]
-        v = spawn self.asyncRequest(url = self.data.imageList.value[i], pathWithImgname = os.joinPath(saveDir, fileName))
+    let urlInFilename: Option[nre.RegexMatch] = self.data.imageList.value[i].find(re"""http.?://.*/(.*jpg|.*png).*""")
+    if urlInFilename.isSome():
+      if len(urlInFilename.get.captures.toSeq()) > 0:
+        let 
+          fileName: string = "hcooldl_" & urlInFilename.get.captures[0]
+          v = spawn self.asyncRequest(url = self.data.imageList.value[i], pathWithImgname = os.joinPath(saveDir, fileName))
   sync()
