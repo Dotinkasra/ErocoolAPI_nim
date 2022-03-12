@@ -8,10 +8,12 @@ import
   ../domain/data_values_infomation,
   dougle,
   ehentai,
+  nijiero,
   nre,
   downloader
 
 type Scraper* = ref object
+  ## An object that analyzes cartoons.
   userAgent*: string
   url*: string
   xml*: XmlNode
@@ -21,6 +23,7 @@ proc new*(
   ua: string = "Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101 Firefox/78.0",
   url: string
 ): Scraper =
+  ## Constructor.
   let 
     client = newHttpClient()
     response = client.get(url)
@@ -36,6 +39,7 @@ proc download*(
   data: Data,
   dlOption: DownloadOption
 ) =
+  ## Download the imageList in the Data object of the Scraper object.
   let dl: Downloader = Downloader.new(data)
   dl.download(dlOption)
 
@@ -46,6 +50,7 @@ proc genDlOption*(
   start: int = 1,
   last: Option[int] = none(int)
 ): DownloadOption =
+  ## Get options for downloading.
   return DownloadOption(
     absolutePath: absolutePath,
     directoryName: directoryName,
@@ -54,9 +59,17 @@ proc genDlOption*(
   )
 
 proc getData*(self: Scraper): Data =
+  ## Obtain the results of parsing the URL cartoon.
+  let
+    data: Data = Data.new()
+
+  data.setUrl(self.url)
   if self.url.contains(re"""https://dougle\.one/.*"""):
     echo "return Dougle"
-    return dougle.extractData(Data.new(), self.xml)
+    return dougle.extractData(data, self.xml)
   elif self.url.contains(re"""https://e-hentai\.org.*"""):
     echo "return ehentai"
-    return ehentai.extractData(Data.new(), self.xml)
+    return ehentai.extractData(data, self.xml)
+  elif self.url.contains(re"""https://erodoujin-search.work/.*"""):
+    echo "return nijiero"
+    return nijiero.extractData(data, self.xml)
