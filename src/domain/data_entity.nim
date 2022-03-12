@@ -3,6 +3,7 @@ import
   strformat
 
 type Data* = ref object
+  ## An object that stores cartoon information.
   jaTitle*: JaTitle
   enTitle*: EnTitle
   uploadDate*: UploadDate
@@ -75,6 +76,9 @@ proc tags*(self: Data): Tags =
 
 proc imageList*(self: Data): ImageList =
   return self.imageList
+
+proc getUrl*(self: Data): string =
+  return $self.url
 
 proc totalPages*(self: Data): int =
   return len(self.imageList.value)
