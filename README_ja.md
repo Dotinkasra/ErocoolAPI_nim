@@ -44,7 +44,7 @@ proc newScraper*(url: string): Scraper =
 ```
 
 ```nim
-proc newScraperWithUa*(url: string, ua: string): Scraper =
+proc newScraper*(url: string, ua: string): Scraper =
 ```
 
 ```nim
