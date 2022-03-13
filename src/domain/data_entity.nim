@@ -1,86 +1,58 @@
 import 
-  data_values_infomation,
-  strformat
+  data_values_infomation
 
 type Data* = ref object
   ## An object that stores cartoon information.
-  jaTitle*: JaTitle
-  enTitle*: EnTitle
-  uploadDate*: UploadDate
-  lang*: Lang
-  thumbnail*: Thumbnail
-  url*: Url
-  artists*: Artists
-  groups*: Groups
-  parodies*: Parodies
-  tags*: Tags
-  imageList*: ImageList
-  totalPages*: int
+  jaTitle: JaTitle
+  enTitle: EnTitle
+  uploadDate: UploadDate
+  lang: Lang
+  thumbnail: Thumbnail
+  url: Url
+  artists: Artists
+  groups: Groups
+  parodies: Parodies
+  tags: Tags
+  imageList: ImageList
+  totalPages: int
   saveImg*: proc(url: string, pathWithImgname: string)
 
 proc new*(_:type Data,): Data = return Data()
 
-proc info*(self: Data) =
-  echo fmt"""
-    -------Infomation-------
-    【LANGUAGE】
-    {self.lang.`$`}
-    【URL】
-    {self.url.`$`}
-    【JA_TITLE】
-    {self.jaTitle.`$`}
-    【EN_TITLE】
-    {self.enTitle.`$`}
-    【UPLOAD_DATE】
-    {self.uploadDate.`$`}
-    【ARTISTS】
-    {self.artists.value}
-    【GROUPS】
-    {self.groups.value}
-    【PARODIES】
-    {self.parodies.value}
-    【TAGS】
-    {self.tags.value}
-    【PAGE_COUNT】
-    {$self.total_pages}
-    【THUMBNAIL】
-    {self.thumbnail.`$`}
-    """
+proc getJaTitle*(self: Data): string =
+  return $self.jaTitle
 
-proc jaTitle*(self: Data): JaTitle =
-  return self.jaTitle
+proc getEnTitle*(self: Data): string =
+  return $self.enTitle
 
-proc enTitle*(self: Data): EnTitle =
-  return self.enTitle
+proc getUploadDate*(self: Data): string =
+  return $self.uploadDate
 
-proc uploadDate*(self: Data): UploadDate =
-  return self.uploadDate
+proc getLang*(self: Data): string =
+  return $self.lang
 
-proc lang*(self: Data): Lang =
-  return self.lang
+proc getThumbnail*(self: Data): string =
+  return $self.thumbnail
 
-proc thumbnail*(self: Data): Thumbnail =
-  return self.thumbnail
+proc getArtists*(self: Data): seq[string] =
+  return self.artists.value
 
-proc artists*(self: Data): Artists =
-  return self.artists
+proc getGroups*(self: Data): seq[string] =
+  return self.groups.value
 
-proc groups*(self: Data): Groups =
-  return self.groups
+proc getParodies*(self: Data): seq[string] =
+  return self.parodies.value
 
-proc parodies*(self: Data): Parodies =
-  return self.parodies
+proc getTags*(self: Data): seq[string] =
+  return self.tags.value
 
-proc tags*(self: Data): Tags =
-  return self.tags
-
-proc imageList*(self: Data): ImageList =
-  return self.imageList
+proc getImageList*(self: Data): seq[string] =
+  return self.imageList.value
 
 proc getUrl*(self: Data): string =
   return $self.url
 
-proc totalPages*(self: Data): int =
+proc getTotalPages*(self: Data): int =
   return len(self.imageList.value)
 
 proc setJatitle*(self: Data, n: string) =
