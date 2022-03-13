@@ -5,6 +5,8 @@ import
   nimquery,
   ../domain/data_entity
 
+proc extractData*(data: Data, xml: XmlNode): Data
+
 proc extractData*(data: Data, xml: XmlNode): Data =
   data.setJatitle(
     querySelectorAll(

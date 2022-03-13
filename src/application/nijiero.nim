@@ -5,6 +5,8 @@ import
   nre,
   ../domain/data_entity
 
+proc extractData*(data: Data, xml: XmlNode): Data
+
 proc extractData*(data: Data, xml: XmlNode): Data =
   data.setJatitle(
     querySelectorAll(
@@ -27,4 +29,3 @@ proc extractData*(data: Data, xml: XmlNode): Data =
   if len(imgList) > 0:
     data.setImageList(imgList.deduplicate)
   return data
-#post-23465 > article

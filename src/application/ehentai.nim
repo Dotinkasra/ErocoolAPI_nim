@@ -10,6 +10,11 @@ import
   sequtils,
   ../domain/data_entity
 
+proc getViewerLink(url: string): Future[seq[string]] {.async.} 
+proc getImageLink(url: string): Future[string] {.async.} 
+proc loopHandle(allPages: XmlNode): Future[seq[string]] {.async.} 
+proc extractData*(data: Data, xml: XmlNode): Data 
+
 proc getViewerLink(url: string): Future[seq[string]] {.async.} =
   let 
     content = newHttpClient().get(url)

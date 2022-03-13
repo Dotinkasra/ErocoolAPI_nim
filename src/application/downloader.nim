@@ -11,6 +11,10 @@ import
 
 type Downloader* = ref object
  data*: Data
+ 
+proc new*(_: type Downloader, data: Data): Downloader
+proc asyncRequest(self: Downloader, url: string, pathWithImgname: string) {.async.}
+proc download*(self: Downloader, dlOption: DownloadOption)
 
 proc new*(_: type Downloader, data: Data): Downloader =
   return Downloader(data: data)
@@ -40,7 +44,7 @@ proc download*(self: Downloader, dlOption: DownloadOption) =
     os.createDir(saveDir)
 
   for i in start - 1..last - 1:
-    let urlInFilename: Option[nre.RegexMatch] = self.data.imageList.value[i].find(re"""http.?://.*/(.*jpg|.*png).*""")
+    let urlInFilename: Option[nre.RegexMatch] = self.data.imageList.value[i].find(re"""https?://.*/(.*jpg|.*png).*""")
     if urlInFilename.isSome():
       if len(urlInFilename.get.captures.toSeq()) > 0:
         let 
