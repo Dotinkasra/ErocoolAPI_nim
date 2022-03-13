@@ -30,7 +30,7 @@ proc mangaDownload(
     lastPageNum: Option[int] = if last > 0: some(last) else: none(int)
     scraper = newScraper(url = url)
     data: Data = scraper.getData()
-    
+
   scraper.download(
     data,
     scraper.genDlOption(

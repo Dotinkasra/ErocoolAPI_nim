@@ -18,6 +18,18 @@ type Scraper* = ref object
   url*: string
   xml*: XmlNode
 
+template selectData(d: Data, url: string, xml: XmlNode) =
+  var instance {.inject.}: Data
+  if url.contains(re"""https://dougle\.one/.*"""):
+    echo "return Dougle"
+    instance = dougle.extractData(data, xml)
+  elif url.contains(re"""https://e-hentai\.org.*"""):
+    echo "return ehentai"
+    instance = ehentai.extractData(data, xml)
+  elif url.contains(re"""https://erodoujin-search.work/.*"""):
+    echo "return nijiero"
+    instance = nijiero.extractData(data, xml)
+
 proc new*(
   _: type Scraper,
   ua: string = "Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101 Firefox/78.0",
@@ -64,12 +76,5 @@ proc getData*(self: Scraper): Data =
     data: Data = Data.new()
 
   data.setUrl(self.url)
-  if self.url.contains(re"""https://dougle\.one/.*"""):
-    echo "return Dougle"
-    return dougle.extractData(data, self.xml)
-  elif self.url.contains(re"""https://e-hentai\.org.*"""):
-    echo "return ehentai"
-    return ehentai.extractData(data, self.xml)
-  elif self.url.contains(re"""https://erodoujin-search.work/.*"""):
-    echo "return nijiero"
-    return nijiero.extractData(data, self.xml)
+  selectData(data, self.url, self.xml)
+  return instance
