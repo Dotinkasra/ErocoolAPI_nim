@@ -12,11 +12,17 @@ import
   nre,
   downloader
 
-type Scraper* = ref object
-  ## An object that analyzes cartoons.
-  userAgent*: string
-  url*: string
-  xml*: XmlNode
+type 
+  Scraper* = ref object
+    ## An object that analyzes cartoons.
+    userAgent*: string
+    url*: string
+    xml*: XmlNode
+
+proc new*(_: type Scraper, ua: string = "Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101 Firefox/78.0", url: string): Scraper
+proc download*(self: Scraper, data: Data, dlOption: DownloadOption)
+proc genDlOption*(self: Scraper, absolutePath: string = "./", directoryName: string = "", start: int = 1, last: Option[int] = none(int)): DownloadOption
+proc getData*(self: Scraper): Data 
 
 template selectData(d: Data, url: string, xml: XmlNode) =
   var instance {.inject.}: Data
@@ -32,7 +38,7 @@ template selectData(d: Data, url: string, xml: XmlNode) =
 
 proc new*(
   _: type Scraper,
-  ua: string = "Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101 Firefox/78.0",
+  ua: string,
   url: string
 ): Scraper =
   ## Constructor.
@@ -57,10 +63,10 @@ proc download*(
 
 proc genDlOption*(
   self: Scraper,
-  absolutePath: string = "./",
-  directoryName: string = "",
-  start: int = 1,
-  last: Option[int] = none(int)
+  absolutePath: string,
+  directoryName: string,
+  start: int,
+  last: Option[int]
 ): DownloadOption =
   ## Get options for downloading.
   return DownloadOption(
