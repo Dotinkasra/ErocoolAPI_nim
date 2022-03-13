@@ -2,21 +2,37 @@ import
     unittest, 
     ../src/erocoolAPI,
     ../src/application/scraper,
-    ../src/domain/data_entity,
-    ../src/domain/data_values_infomation
+    ../src/domain/data_entity
 
 test "dougle_test":
-    let erocool = newScraper("https://dougle.one/archives/87461")
-    let data = erocool.getData()
-    echo data.jaTitle
-    echo data.imageList.value
-    check(data.jaTitle.`$` != "")
-    check(len(data.imageList.value) > 0)
+    let 
+        erocool: Scraper = newScraper("https://dougle.one/archives/87461")
+        data: Data = erocool.getData()
+        jaTitle: string = data.getJaTitle()
+        imageList: seq[string] = data.getImageList()
+    echo jaTitle
+    echo imageList
+    check(jaTitle != "")
+    check(len(imageList) > 0)
     
 test "ehentai_test":
-    let erocool = newScraper("https://e-hentai.org/g/2159705/f328758fd3/")
-    let data = erocool.getData()
-    echo data.jaTitle
-    echo data.imageList.value
-    check(data.jaTitle.`$` != "")
-    check(len(data.imageList.value) > 0)
+    let 
+        erocool: Scraper = newScraper("https://e-hentai.org/g/2159705/f328758fd3/")
+        data: Data = erocool.getData()
+        jaTitle: string = data.getJaTitle()
+        imageList: seq[string] = data.getImageList()
+    echo jaTitle
+    echo imageList
+    check(jaTitle != "")
+    check(len(imageList) > 0)
+
+test "nijiero_test":
+    let 
+        erocool: Scraper = newScraper("https://erodoujin-search.work/2022/02/02/post-0-1358/")
+        data: Data = erocool.getData()
+        jaTitle: string = data.getJaTitle()
+        imageList: seq[string] = data.getImageList()
+    echo jaTitle
+    echo imageList
+    check(jaTitle != "")
+    check(len(imageList) > 0)
