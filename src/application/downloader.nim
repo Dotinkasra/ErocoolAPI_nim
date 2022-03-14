@@ -49,5 +49,5 @@ proc download*(self: Downloader, dlOption: DownloadOption) =
       if len(urlInFilename.get.captures.toSeq()) > 0:
         let 
           fileName: string = "hcooldl_" & urlInFilename.get.captures[0]
-          v = spawn self.asyncRequest(url = self.data.getImageList()[i], pathWithImgname = os.joinPath(saveDir, fileName))
+        discard spawn self.asyncRequest(url = self.data.getImageList()[i], pathWithImgname = os.joinPath(saveDir, fileName))
   sync()
