@@ -95,3 +95,8 @@ You will need to install mingw from the following site and set the environment v
 https://nim-lang.org/install_windows.html
 
 Alternatively, we recommend running binaries for Linux on WSLs.
+
+## Update
+v0.1.3b Increased e-hentai download speed up to 2x.
+v0.1.3  Compatible with NIJIERO.
+v0.1.2  Support for e-hentai.
