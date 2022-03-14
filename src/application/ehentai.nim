@@ -4,48 +4,40 @@ import
   nimquery,
   htmlparser,
   streams,
-  asyncdispatch,
   httpclient,
+  threadpool,
   nre,
   sequtils,
   ../domain/data_entity
 
-proc getViewerLink(url: string): Future[seq[string]] {.async.} 
-proc getImageLink(url: string): Future[string] {.async.} 
-proc loopHandle(allPages: XmlNode): Future[seq[string]] {.async.} 
+proc getImageLink(url: string): seq[string]  
+proc loopHandle(allPages: XmlNode): seq[string]
 proc extractData*(data: Data, xml: XmlNode): Data 
 
-proc getViewerLink(url: string): Future[seq[string]] {.async.} =
+proc getImageLink(url: string): seq[string] =
   let 
     content = newHttpClient().get(url)
     xml = content.body.newStringStream().parseHtml()
     imagePageDiv = xml.querySelectorAll("div.gdtm")
   var 
-    retFuture = newFuture[seq[string]]("connect")
     linkList: seq[string] = newSeq[string]()
   
   for page in imagePageDiv:
     let link = page.querySelectorAll("a")
     if len(link) == 0:
       continue
-    linkList.add(link[0].attr("href"))
-  retFuture.complete(linkList)
+    linkList.add(
+      newHttpClient()
+      .get(link[0].attr("href"))
+      .body.newStringStream().parseHtml()
+      .querySelector("#img").attr("src")
+    )
   return linkList
 
-proc getImageLink(url: string): Future[string] {.async.} =
-  let
-    content = newHttpClient().get(url)
-    xml = content.body.newStringStream().parseHtml()
-    imageTag = xml.querySelector("#img").attr("src")
-  return imageTag
-
-proc loopHandle(allPages: XmlNode): Future[seq[string]] {.async.} =
+proc loopHandle(allPages: XmlNode): seq[string] =
   var 
-    results = newSeq[string]()
     previwLinks = newSeq[string]()
     imgLinks = newSeq[string]()
-    previwGetEvents = newSeq[Future[seq[string]]]()
-    imgGetEvents = newSeq[Future[string]]()
 
   for page in allPages:
     let aLink = page.querySelectorAll("a")
@@ -54,20 +46,11 @@ proc loopHandle(allPages: XmlNode): Future[seq[string]] {.async.} =
     previwLinks.add(aLink[0].attr("href"))
   
   for link in previwLinks.deduplicate:
-    previwGetEvents.add(getViewerLink(link))
-
-  var previwResult = await all(previwGetEvents)
-
-  for r in previwResult:
-    results &= r
-  
-  for previwLink in results:
-    imgGetEvents.add(getImageLink(previwLink))
-  
-  var imgResult = await all(imgGetEvents)
-  for r in imgResult:
-    if not r.isEmptyOrWhitespace():
-      imgLinks.add(r)
+    var thread = spawn getImageLink(link)
+    for img in ^thread:
+      if not img.isEmptyOrWhitespace:
+        imgLinks.add(img)
+  sync()
   
   return imgLinks
 
@@ -93,7 +76,7 @@ proc extractData*(data: Data, xml: XmlNode): Data =
     of "Language:":
       data.setLang(info)
   let allPages = xml.querySelector("body > div:nth-child(9) > table").querySelectorAll("tr")[0]
-  let imgLinks: seq[string] = waitFor loopHandle(allPages = allPages)
+  let imgLinks: seq[string] = loopHandle(allPages = allPages)
   data.setImageList(imgLinks)
 
   return data
