@@ -16,7 +16,6 @@ proc extractData*(data: Data, xml: XmlNode): Data
 proc loopExecuter(link: string): seq[string] {.thread.}
 
 proc getImageLink(url: string): Future[seq[string]] {.async.} =
-  echo "getImageLink"
   let 
     client = newAsyncHttpClient()
     body = await client.getContent(url)
@@ -38,12 +37,9 @@ proc getImageLink(url: string): Future[seq[string]] {.async.} =
   return linkList
 
 proc loopHandle(allPages: XmlNode): seq[string] =
-  echo "loophandle"
   var 
-    #previwLinks = newSeq[string]()
     resultSeq = newSeq[FlowVar[seq[string]]]()
     imgLinks = newSeq[string]()
-    #handle = newSeq[seq[string]]()
   for page in allPages:
     let aLink = page.querySelectorAll("a")
     if len(aLink) == 0:
@@ -58,7 +54,6 @@ proc loopHandle(allPages: XmlNode): seq[string] =
   return imgLinks
   
 proc loopExecuter(link: string): seq[string] =
-  echo "loopExecuter"
   var
     imgLinks = newSeq[string]()
   let 
