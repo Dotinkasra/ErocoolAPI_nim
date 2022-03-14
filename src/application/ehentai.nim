@@ -3,21 +3,24 @@ import
   strutils,
   nimquery,
   htmlparser,
+  asyncdispatch,
   streams,
   httpclient,
   threadpool,
   nre,
-  sequtils,
   ../domain/data_entity
 
-proc getImageLink(url: string): seq[string]  
+proc getImageLink(url: string): Future[seq[string]] {.async.}
 proc loopHandle(allPages: XmlNode): seq[string]
 proc extractData*(data: Data, xml: XmlNode): Data 
+proc loopExecuter(link: string): seq[string] {.thread.}
 
-proc getImageLink(url: string): seq[string] =
+proc getImageLink(url: string): Future[seq[string]] {.async.} =
+  echo "getImageLink"
   let 
-    content = newHttpClient().get(url)
-    xml = content.body.newStringStream().parseHtml()
+    client = newAsyncHttpClient()
+    body = await client.getContent(url)
+    xml = body.newStringStream().parseHtml()
     imagePageDiv = xml.querySelectorAll("div.gdtm")
   var 
     linkList: seq[string] = newSeq[string]()
@@ -26,32 +29,43 @@ proc getImageLink(url: string): seq[string] =
     let link = page.querySelectorAll("a")
     if len(link) == 0:
       continue
+    let linkContent = await newAsyncHttpClient().getContent(link[0].attr("href"))
     linkList.add(
-      newHttpClient()
-      .get(link[0].attr("href"))
-      .body.newStringStream().parseHtml()
+      linkContent
+      .newStringStream().parseHtml()
       .querySelector("#img").attr("src")
     )
   return linkList
 
 proc loopHandle(allPages: XmlNode): seq[string] =
+  echo "loophandle"
   var 
-    previwLinks = newSeq[string]()
+    #previwLinks = newSeq[string]()
+    resultSeq = newSeq[FlowVar[seq[string]]]()
     imgLinks = newSeq[string]()
-
+    #handle = newSeq[seq[string]]()
   for page in allPages:
     let aLink = page.querySelectorAll("a")
     if len(aLink) == 0:
       continue
-    previwLinks.add(aLink[0].attr("href"))
-  
-  for link in previwLinks.deduplicate:
-    var thread = spawn getImageLink(link)
-    for img in ^thread:
-      if not img.isEmptyOrWhitespace:
-        imgLinks.add(img)
+    resultSeq.add(spawn loopExecuter(aLink[0].attr("href")))
   sync()
+
+  for result in resultSeq:
+    for img in ^result:
+      echo img
+      imgLinks.add(img)
+  return imgLinks
   
+proc loopExecuter(link: string): seq[string] =
+  echo "loopExecuter"
+  var
+    imgLinks = newSeq[string]()
+  let 
+    results = waitFor getImageLink(link)
+  for img in results:
+    if not img.isEmptyOrWhitespace:
+      imgLinks.add(img)
   return imgLinks
 
 proc extractData*(data: Data, xml: XmlNode): Data =
