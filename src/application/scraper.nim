@@ -27,13 +27,13 @@ proc getData*(self: Scraper): Data
 template selectData(d: Data, url: string, xml: XmlNode) =
   var instance {.inject.}: Data
   if url.contains(re"""https://dougle\.one/.*"""):
-    echo "return Dougle"
+    echo "【Dougle】"
     instance = dougle.extractData(data, xml)
   elif url.contains(re"""https://e-hentai\.org.*"""):
-    echo "return ehentai"
+    echo "【ehentai】"
     instance = ehentai.extractData(data, xml)
   elif url.contains(re"""https://erodoujin-search.work/.*"""):
-    echo "return nijiero"
+    echo "【nijiero】"
     instance = nijiero.extractData(data, xml)
 
 proc new*(
@@ -80,7 +80,7 @@ proc getData*(self: Scraper): Data =
   ## Obtain the results of parsing the URL cartoon.
   let
     data: Data = Data.new()
-
+  echo "【getData】 : " & self.url 
   data.setUrl(self.url)
   selectData(data, self.url, self.xml)
   return instance

@@ -8,6 +8,7 @@ import
 proc extractData*(data: Data, xml: XmlNode): Data
 
 proc extractData*(data: Data, xml: XmlNode): Data =
+  echo "【dougle】extractData"
   data.setJatitle(
     querySelectorAll(
       xml, "[class=\"single-post-title entry-title\"]"

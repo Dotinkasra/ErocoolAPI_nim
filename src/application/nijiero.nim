@@ -8,6 +8,7 @@ import
 proc extractData*(data: Data, xml: XmlNode): Data
 
 proc extractData*(data: Data, xml: XmlNode): Data =
+  echo "【nijiero】extractData"
   data.setJatitle(
     querySelectorAll(
       xml, "head > title"

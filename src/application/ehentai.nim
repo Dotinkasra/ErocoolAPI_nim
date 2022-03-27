@@ -6,6 +6,7 @@ import
   asyncdispatch,
   streams,
   httpclient,
+  sequtils,
   threadpool,
   nre,
   ../domain/data_entity
@@ -16,6 +17,7 @@ proc extractData*(data: Data, xml: XmlNode): Data
 proc loopExecuter(link: string): seq[string] {.thread.}
 
 proc getImageLink(url: string): Future[seq[string]] {.async.} =
+  echo "【e-hentai】getImageLink : " & url
   let 
     client = newAsyncHttpClient()
     body = await client.getContent(url)
@@ -26,44 +28,52 @@ proc getImageLink(url: string): Future[seq[string]] {.async.} =
   
   for page in imagePageDiv:
     let link = page.querySelectorAll("a")
-    if len(link) == 0:
-      continue
-    let linkContent = await newAsyncHttpClient().getContent(link[0].attr("href"))
+    if len(link) == 0: continue
+    let linkContent = await client.getContent(link[0].attr("href"))
     linkList.add(
       linkContent
       .newStringStream().parseHtml()
       .querySelector("#img").attr("src")
     )
+    client.close()
   return linkList
 
 proc loopHandle(allPages: XmlNode): seq[string] =
+  echo "【e-hentai】loopHandle"
   var 
     resultSeq = newSeq[FlowVar[seq[string]]]()
     imgLinks = newSeq[string]()
+    viewerLinks = newSeq[string]()
+
   for page in allPages:
     let aLink = page.querySelectorAll("a")
-    if len(aLink) == 0:
-      continue
-    resultSeq.add(spawn loopExecuter(aLink[0].attr("href")))
+    if len(aLink) == 0: continue
+    if aLink[0].attr("href").isEmptyOrWhitespace: continue
+    viewerLinks.add(aLink[0].attr("href"))
+
+  for viewer in viewerLinks.deduplicate:
+    resultSeq.add(spawn loopExecuter(viewer))
   sync()
 
   for result in resultSeq:
     for img in ^result:
-      echo img
+      if img.isEmptyOrWhitespace: continue
       imgLinks.add(img)
   return imgLinks
   
 proc loopExecuter(link: string): seq[string] =
+  echo "【e-hentai】loopExecuter : start"
   var
     imgLinks = newSeq[string]()
   let 
     results = waitFor getImageLink(link)
   for img in results:
-    if not img.isEmptyOrWhitespace:
-      imgLinks.add(img)
+    if img.isEmptyOrWhitespace: continue
+    imgLinks.add(img)
   return imgLinks
 
 proc extractData*(data: Data, xml: XmlNode): Data =
+  echo "【e-hentai】extractData : start"
   data.setJatitle(
     querySelectorAll(xml, "#gn")[0]
     .innerText
@@ -87,6 +97,6 @@ proc extractData*(data: Data, xml: XmlNode): Data =
   let allPages = xml.querySelector("body > div:nth-child(9) > table").querySelectorAll("tr")[0]
   let imgLinks: seq[string] = loopHandle(allPages = allPages)
   data.setImageList(imgLinks)
-
+  echo "【e-hentai】extractData : end"
   return data
 
