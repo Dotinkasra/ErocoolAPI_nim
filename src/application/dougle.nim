@@ -8,7 +8,7 @@ import
 proc extractData*(data: Data, xml: XmlNode): Data
 
 proc extractData*(data: Data, xml: XmlNode): Data =
-  echo "【dougle】extractData"
+  echo "【dougle】extractData : start"
   data.setJatitle(
     querySelectorAll(
       xml, "[class=\"single-post-title entry-title\"]"
@@ -32,4 +32,5 @@ proc extractData*(data: Data, xml: XmlNode): Data =
     if not href.isEmptyOrWhitespace(): imgList[i] = c.attr("href")
   if len(imgList) > 0:
     data.setImageList(imgList)
+  echo "【dougle】extractData : end"
   return data

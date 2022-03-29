@@ -8,7 +8,7 @@ import
 proc extractData*(data: Data, xml: XmlNode): Data
 
 proc extractData*(data: Data, xml: XmlNode): Data =
-  echo "【nijiero】extractData"
+  echo "【nijiero】extractData : start"
   data.setJatitle(
     querySelectorAll(
       xml, "head > title"
@@ -29,4 +29,5 @@ proc extractData*(data: Data, xml: XmlNode): Data =
       imgList.add(root & href)
   if len(imgList) > 0:
     data.setImageList(imgList.deduplicate)
+  echo "【nijiero】extractData : end"
   return data
