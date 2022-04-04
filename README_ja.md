@@ -18,45 +18,33 @@ type Data* = ref object
   tags*: Tags
   imageList*: ImageList
   totalPages*: int
-  saveImg*: proc(url: string, pathWithImgname: string)
-```
-
-漫画のデータを格納する。
-
-```nim
-type Scraper* = ref object
-  userAgent*: string
-  url*: string
-  xml*: XmlNode
 ```
 
 ```nim
-type DownloadOption* = object
-  absolutePath*: string
-  directoryName*: string
-  start*: int
-  last*: Option[int]
+type ErocoolAPI* = ref object
+  scraper*: Scraper
+  data*: Data
 ```
 
 ### Procs
 ```nim
-proc newScraper*(url: string): Scraper =
+proc newErocoolAPI*(url: string, ua: string = ""): ErocoolAPI
 ```
 
 ```nim
-proc newScraper*(url: string, ua: string): Scraper =
+proc reset*(self: ErocoolAPI, url: string)
 ```
 
 ```nim
-proc download*(self: Scraper, data: Data, dlOption: DownloadOption) =
+proc download*(self: ErocoolAPI, start: int = 1, last: int = -1, output: string = "./", name: string = "")
 ```
 
 ```nim
-proc genDlOption*(self: Scraper, absolutePath: string = "./", directoryName: string = "", start: int = 1, last: Option[int] = none(int)): DownloadOption =
+proc getAllInfo*(self: ErocoolAPI): JsonNode
 ```
 
 ```nim
-proc getData*(self: Scraper): Data =
+proc getInfoBySpecifyingKey*(self: ErocoolAPI, key: string): JsonNode 
 ```
 
 ## コマンドライン
