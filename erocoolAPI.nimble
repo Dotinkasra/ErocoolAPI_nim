@@ -5,6 +5,7 @@ author        = "Dotinkasra"
 description   = "Download erotic manga."
 license       = "MIT"
 srcDir        = "src"
+installExt    = @["nim"]
 bin           = @["erocoolAPI"]
 
 

@@ -2,8 +2,8 @@ import
   options,
   strutils,
   json,
-  application/scraper,
-  domain/data_entity,
+  erocoolAPIpkg/application/scraper,
+  erocoolAPIpkg/domain/data_entity,
   cligen
 
 type ErocoolAPI* = ref object
