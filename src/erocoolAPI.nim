@@ -18,16 +18,17 @@ proc getInfoBySpecifyingKey*(self: ErocoolAPI, key: string): JsonNode
 
 proc getInfoInJsonFormat(self: ErocoolAPI): JsonNode 
 
-proc newScraper*(url: string): Scraper
-proc newScraper*(url: string, ua: string): Scraper 
+proc newScraper(url: string): Scraper
+proc newScraper(url: string, ua: string): Scraper 
 proc mangaDownload(url: string, start: int = 1, last: int = -1, output: string = "./", name: string = "", ua: string = "")
 
 ## ErocoolAPI doc
+
 proc newErocoolAPI*(
   url: string,
   ua: string
 ): ErocoolAPI =
-
+  ## Obtain a new object.
   let 
     scraper = if ua.isEmptyOrWhitespace: Scraper.new(url = url) else: Scraper.new(ua = ua, url = url)
     data = scraper.getData()
@@ -39,6 +40,7 @@ proc reset*(
   self: ErocoolAPI,
   url: string
 ) =
+  ## Reset the URL of the object.
   self.scraper = Scraper.new(url = url)
 
 proc download*(
@@ -66,6 +68,7 @@ proc download*(
 proc getAllInfo*(
   self: ErocoolAPI
 ): JsonNode =
+  ## Obtain all information in JSON format.
   var 
     infomation: JsonNode = self.getInfoInJsonFormat()
   return infomation
@@ -74,6 +77,7 @@ proc getInfoBySpecifyingKey*(
   self: ErocoolAPI,
   key: string
 ): JsonNode =
+  ## Obtain information in JSON format by specifying a key.
   var
     infomation: JsonNode = self.getInfoInJsonFormat()
   return infomation{key}
@@ -99,13 +103,13 @@ proc getInfoInJsonFormat(
       }
   return infomation
 
-proc newScraper*(
+proc newScraper(
   url: string
 ): Scraper =
   ## Obtains a Scraper object without specifying a User Agent.
   return Scraper.new(url = url)
 
-proc newScraper*(
+proc newScraper(
   url: string,
   ua: string
 ): Scraper =
