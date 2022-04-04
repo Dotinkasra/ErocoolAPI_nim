@@ -139,13 +139,6 @@ window.addEventListener('DOMContentLoaded', main);
     title="newErocoolAPI(url: string; ua: string = &quot;&quot;): ErocoolAPI">newErocoolAPI(url: string; ua: string = &quot;&quot;): ErocoolAPI</a></li>
 
   </ul>
-  <ul class="simple nested-toc-section">newScraper
-      <li><a class="reference" href="#newScraper%2Cstring"
-    title="newScraper(url: string): Scraper">newScraper(url: string): Scraper</a></li>
-  <li><a class="reference" href="#newScraper%2Cstring%2Cstring"
-    title="newScraper(url: string; ua: string): Scraper">newScraper(url: string; ua: string): Scraper</a></li>
-
-  </ul>
   <ul class="simple nested-toc-section">reset
       <li><a class="reference" href="#reset%2CErocoolAPI%2Cstring"
     title="reset(self: ErocoolAPI; url: string)">reset(self: ErocoolAPI; url: string)</a></li>
@@ -204,7 +197,7 @@ Download the cartoon at the URL set in the constructor of the Scraper object.
     <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">RootEffect</span><span class="Other">]</span></span>.}</pre></dt>
 <dd>
 
-
+Obtain all information in JSON format.
 
 </dd>
 </div>
@@ -213,7 +206,7 @@ Download the cartoon at the URL set in the constructor of the Scraper object.
     <span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">Exception</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">RootEffect</span><span class="Other">]</span></span>.}</pre></dt>
 <dd>
 
-
+Obtain information in JSON format by specifying a key.
 
 </dd>
 </div>
@@ -226,29 +219,7 @@ Download the cartoon at the URL set in the constructor of the Scraper object.
     <span class="Identifier">TimeEffect</span><span class="Other">]</span></span>.}</pre></dt>
 <dd>
 
-
-
-</dd>
-</div>
-<div id="newScraper,string">
-<dt><pre><span class="Keyword">proc</span> <a href="#newScraper%2Cstring"><span class="Identifier">newScraper</span></a><span class="Other">(</span><span class="Identifier">url</span><span class="Other">:</span> <span class="Identifier">string</span><span class="Other">)</span><span class="Other">:</span> <a href="scraper.html#Scraper"><span class="Identifier">Scraper</span></a> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">Exception</span><span class="Other">,</span> <span class="Identifier">LibraryError</span><span class="Other">,</span>
-    <span class="Identifier">SslError</span><span class="Other">,</span> <span class="Identifier">IOError</span><span class="Other">,</span> <span class="Identifier">ValueError</span><span class="Other">,</span> <span class="Identifier">HttpRequestError</span><span class="Other">,</span> <span class="Identifier">OSError</span><span class="Other">,</span> <span class="Identifier">TimeoutError</span><span class="Other">,</span>
-    <span class="Identifier">ProtocolError</span><span class="Other">,</span> <span class="Identifier">KeyError</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">RootEffect</span><span class="Other">,</span> <span class="Identifier">ReadDirEffect</span><span class="Other">,</span> <span class="Identifier">ReadEnvEffect</span><span class="Other">,</span>
-                                     <span class="Identifier">ReadIOEffect</span><span class="Other">,</span> <span class="Identifier">WriteIOEffect</span><span class="Other">,</span> <span class="Identifier">TimeEffect</span><span class="Other">]</span></span>.}</pre></dt>
-<dd>
-
-Obtains a Scraper object without specifying a User Agent.
-
-</dd>
-</div>
-<div id="newScraper,string,string">
-<dt><pre><span class="Keyword">proc</span> <a href="#newScraper%2Cstring%2Cstring"><span class="Identifier">newScraper</span></a><span class="Other">(</span><span class="Identifier">url</span><span class="Other">:</span> <span class="Identifier">string</span><span class="Other">;</span> <span class="Identifier">ua</span><span class="Other">:</span> <span class="Identifier">string</span><span class="Other">)</span><span class="Other">:</span> <a href="scraper.html#Scraper"><span class="Identifier">Scraper</span></a> {.<span><span class="Other pragmadots">...</span></span><span class="pragmawrap"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">Exception</span><span class="Other">,</span>
-    <span class="Identifier">LibraryError</span><span class="Other">,</span> <span class="Identifier">SslError</span><span class="Other">,</span> <span class="Identifier">IOError</span><span class="Other">,</span> <span class="Identifier">ValueError</span><span class="Other">,</span> <span class="Identifier">HttpRequestError</span><span class="Other">,</span> <span class="Identifier">OSError</span><span class="Other">,</span>
-    <span class="Identifier">TimeoutError</span><span class="Other">,</span> <span class="Identifier">ProtocolError</span><span class="Other">,</span> <span class="Identifier">KeyError</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">RootEffect</span><span class="Other">,</span> <span class="Identifier">ReadDirEffect</span><span class="Other">,</span>
-    <span class="Identifier">ReadEnvEffect</span><span class="Other">,</span> <span class="Identifier">ReadIOEffect</span><span class="Other">,</span> <span class="Identifier">WriteIOEffect</span><span class="Other">,</span> <span class="Identifier">TimeEffect</span><span class="Other">]</span></span>.}</pre></dt>
-<dd>
-
-Obtains a Scraper object by specifying a User Agent.
+Obtain a new object.
 
 </dd>
 </div>
@@ -259,7 +230,7 @@ Obtains a Scraper object by specifying a User Agent.
                                      <span class="Identifier">ReadIOEffect</span><span class="Other">,</span> <span class="Identifier">WriteIOEffect</span><span class="Other">,</span> <span class="Identifier">TimeEffect</span><span class="Other">]</span></span>.}</pre></dt>
 <dd>
 
-
+Reset the URL of the object.
 
 </dd>
 </div>
@@ -273,7 +244,7 @@ Obtains a Scraper object by specifying a User Agent.
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br/>
-        <small style="color: var(--hint);">Made with Nim. Generated: 2022-04-04 19:42:06 UTC</small>
+        <small style="color: var(--hint);">Made with Nim. Generated: 2022-04-04 19:50:19 UTC</small>
       </div>
     </div>
   </div>
