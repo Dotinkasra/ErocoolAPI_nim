@@ -24,6 +24,19 @@ proc download*(self: Scraper, data: Data, dlOption: DownloadOption)
 proc genDlOption*(self: Scraper, absolutePath: string = "./", directoryName: string = "", start: int = 1, last: Option[int] = none(int)): DownloadOption
 proc getData*(self: Scraper): Data 
 
+template initData(data: Data) =
+  data.setJatitle("")
+  data.setEnTitle("")
+  data.setUploadDate("")
+  data.setLang("")
+  data.setThumbnail("")
+  data.setUrl("")
+  data.setArtists((newSeq[string]()))
+  data.setGroups(newSeq[string]())
+  data.setParodies(newSeq[string]())
+  data.setTags(newSeq[string]())
+  data.setImageList(newSeq[string]())
+
 template selectData(d: Data, url: string, xml: XmlNode) =
   var instance {.inject.}: Data
   if url.contains(re"""https://dougle\.one/.*"""):
@@ -78,8 +91,8 @@ proc genDlOption*(
 
 proc getData*(self: Scraper): Data =
   ## Obtain the results of parsing the URL cartoon.
-  let
-    data: Data = Data.new()
+  let data: Data = Data.new()
+  initData(data)
   echo "【getData】 : " & self.url 
   data.setUrl(self.url)
   selectData(data, self.url, self.xml)
