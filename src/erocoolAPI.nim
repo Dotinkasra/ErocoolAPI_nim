@@ -7,8 +7,8 @@ import
   cligen
 
 type ErocoolAPI* = ref object
-  scraper*: Scraper
-  data*: Data
+  scraper: Scraper
+  data: Data
 
 proc newErocoolAPI*(url: string, ua: string = ""): ErocoolAPI
 proc reset*(self: ErocoolAPI, url: string)

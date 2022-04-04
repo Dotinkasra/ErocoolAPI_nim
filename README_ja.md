@@ -22,8 +22,8 @@ type Data* = ref object
 
 ```nim
 type ErocoolAPI* = ref object
-  scraper*: Scraper
-  data*: Data
+  scraper: Scraper
+  data: Data
 ```
 
 ### Procs
