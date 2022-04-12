@@ -89,6 +89,11 @@ proc loopExecuter(link: string): seq[string] =
 proc extractData*(data: Data, xml: XmlNode): Data =
   echo "【e-hentai】extractData : start"
   data.setJatitle(
+    querySelectorAll(xml, "#gj")[0]
+    .innerText
+  )
+
+  data.setEntitle(
     querySelectorAll(xml, "#gn")[0]
     .innerText
   )

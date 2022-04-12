@@ -55,6 +55,7 @@ proc download*(self: Downloader, dlOption: DownloadOption) =
   if not saveDir.dirExists:
     os.createDir(saveDir)
 
+  var index: int = 1
   for i in start - 1..last - 1:
     try:
       if imageList[i].isEmptyOrWhitespace: continue
@@ -63,16 +64,17 @@ proc download*(self: Downloader, dlOption: DownloadOption) =
       continue
     let 
       urlInFilename: Option[nre.RegexMatch] = imageList[i].find(re"""https?://.*/(.*jpg|.*png).*""")
-    if urlInFilename.isNone(): continue
-    if len(urlInFilename.get.captures.toSeq()) == 0: continue
+    if urlInFilename.isNone() or len(urlInFilename.get.captures.toSeq()) == 0: continue
 
     let 
-      fileName: string = "hcooldl_" & urlInFilename.get.captures[0]
+      fileName: string = "hcooldl_" & $index & "_" & urlInFilename.get.captures[0]
     var
       pathWithImgname: string =  os.joinPath(saveDir, fileName)
     if fileName.isEmptyOrWhitespace: continue
     if os.fileExists(pathWithImgname): 
       pathWithImgname = os.joinPath(saveDir, $i & fileName)
+
+    inc index
     echo "【downloader】" & $(i + 1) & " : " & fileName
     discard spawn self.asyncRequest(url = imageList[i], pathWithImgname = pathWithImgname)
   sync()
