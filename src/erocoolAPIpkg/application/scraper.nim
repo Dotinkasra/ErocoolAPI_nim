@@ -9,6 +9,7 @@ import
   dougle,
   ehentai,
   nijiero,
+  imhentai,
   nre,
   downloader
 
@@ -45,9 +46,12 @@ template selectData(d: Data, url: string, xml: XmlNode) =
   elif url.contains(re"""https://e-hentai\.org.*"""):
     echo "【ehentai】"
     instance = ehentai.extractData(data, xml)
-  elif url.contains(re"""https://erodoujin-search.work/.*"""):
+  elif url.contains(re"""https://erodoujin-search\.work/.*"""):
     echo "【nijiero】"
     instance = nijiero.extractData(data, xml)
+  elif url.contains(re"""https://imhentai\.xxx/gallery/.*"""):
+    echo "【IMHentai】"
+    instance = imhentai.extractData(data, xml)
 
 proc new*(
   _: type Scraper,
