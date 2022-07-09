@@ -38,19 +38,21 @@ proc extractData*(data: Data, xml: XmlNode): Data =
     thredsProcList = newSeq[FlowVar[string]]()
     imageList = newSeq[string]()
 
-
   for i in 1..totalPages:
     thredsProcList.add(spawn loopHandle(viewerUrl & $i & "/"))
   sync()
 
   for result in thredsProcList:
     imageList.add(^result)
+    echo ^result
   data.setImageList(imageList)
+
   echo "【IMHentai】extractData : end"
   return data
 
 proc loopHandle(viewerUrl: string): string =
   let imgLink: string = waitFor getImageLink(viewerUrl)
+  echo "【IMHentai】loopHandle : " & imgLink
   return imgLink
 
 proc getImageLink(viewerUrl: string): Future[string] {.async.} =
@@ -62,5 +64,6 @@ proc getImageLink(viewerUrl: string): Future[string] {.async.} =
       .parseHtml()
       .querySelector("#gimg")
       .attr("data-src") 
+  client.close()
   if imageSrc.isEmptyOrWhitespace: return ""
   return imageSrc
