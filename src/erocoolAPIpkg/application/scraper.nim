@@ -52,6 +52,8 @@ template selectData(d: Data, url: string, xml: XmlNode) =
   elif url.contains(re"""https://imhentai\.xxx/gallery/.*"""):
     echo "【IMHentai】"
     instance = imhentai.extractData(data, xml)
+  else:
+    echo "サポートされていない"
 
 proc new*(
   _: type Scraper,
