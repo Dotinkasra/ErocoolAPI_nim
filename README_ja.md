@@ -92,6 +92,7 @@ https://nim-lang.org/install_windows.html
 
 ## アップデート
 
+- **v0.1.4**   IMhentaiに対応。e-hentaiのダウンロード処理を改善。
 - **v0.1.3b**  e-hentaiのダウンロード速度を最大2倍に向上。  
 - **v0.1.3**   二次エロ画像サーチに対応。  
 - **v0.1.2**   e-hentaiに対応。  

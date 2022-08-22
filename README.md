@@ -87,6 +87,8 @@ https://nim-lang.org/install_windows.html
 Alternatively, we recommend running binaries for Linux on WSLs.
 
 ## Update
+
+- **v0.1.4**   Support for IMhentai。Improved e-hentai download process.
 - **v0.1.3b**  Increased e-hentai download speed up to 2x.  
 - **v0.1.3**   Compatible with NIJIERO.  
 - **v0.1.2**   Support for e-hentai.
