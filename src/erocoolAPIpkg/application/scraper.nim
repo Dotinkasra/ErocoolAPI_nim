@@ -10,6 +10,7 @@ import
   ehentai,
   nijiero,
   imhentai,
+  okhentai,
   nre,
   downloader
 
@@ -52,6 +53,9 @@ template selectData(d: Data, url: string, xml: XmlNode) =
   elif url.contains(re"""https://imhentai\.xxx/gallery/.*"""):
     echo "【IMHentai】"
     instance = imhentai.extractData(data, xml)
+  elif url.contains(re"""https://okhentai\.net/gallery/.*"""):
+    echo "【okHentai】"
+    instance = okhentai.extractData(data, xml)
   else:
     echo "サポートされていない"
 
