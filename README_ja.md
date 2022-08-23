@@ -48,21 +48,22 @@ proc getInfoBySpecifyingKey*(self: ErocoolAPI, key: string): JsonNode
 ```
 
 ## コマンドライン
+通常のダウンロード
 
 ```bash
-erocoolAPI --url 'https://ja.erocool.com/detail/xxxxxxx.html'
+erocoolAPI 'https://ja.erocool.com/detail/xxxxxxx.html'
 ```
 
 開始番号、終了番号、保存先、ディレクトリ名が指定できます。
 
 ```bash
-erocoolAPI --url 'https://ja.erocool.com/detail/xxxxxxx.html' -s 5 -e 10 -o ~/Downloads/Mangas -n 'xxxxx'
+erocoolAPI 'https://ja.erocool.com/detail/xxxxxxx.html' -s 5 -e 10 -o ~/Downloads/Mangas -n 'xxxxx'
 ```
 
 User-Agentを指定することができます。
 
 ```bash
-erocoolAPI --url 'https://ja.erocool.com/detail/xxxxxxx.html' --ua "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6)"
+erocoolAPI 'https://ja.erocool.com/detail/xxxxxxx.html' --ua "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6)"
 ```
 
 その他
@@ -70,12 +71,11 @@ erocoolAPI --url 'https://ja.erocool.com/detail/xxxxxxx.html' --ua "Mozilla/5.0 
 ```bash
  $ ./erocoolapi -h
 Usage:
-  mangaDownload [REQUIRED,optional-params]
+  mangaDownload [optional-params] [args: string...]
 Download the cartoon at the URL set in the constructor of the Scraper object.
 Options:
   -h, --help                        print this cligen-erated help
   --help-syntax                     advanced: prepend,plurals,..
-  --url=          string  REQUIRED  URL of the contents
   -s=, --start=   int     1         Specify the first page number to start downloading.
   -e=, --last=    int     -1        Specify the last page number to finish downloading.
   -o=, --output=  string  "./"      Output directory
@@ -92,6 +92,7 @@ https://nim-lang.org/install_windows.html
 
 ## アップデート
 
+- **v0.1.4**   IMhentaiに対応。e-hentaiのダウンロード処理を改善。
 - **v0.1.3b**  e-hentaiのダウンロード速度を最大2倍に向上。  
 - **v0.1.3**   二次エロ画像サーチに対応。  
 - **v0.1.2**   e-hentaiに対応。  
