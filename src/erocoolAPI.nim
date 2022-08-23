@@ -13,10 +13,11 @@ type ErocoolAPI* = ref object
 proc newErocoolAPI*(url: string, ua: string = ""): ErocoolAPI
 proc reset*(self: ErocoolAPI, url: string)
 proc download*(self: ErocoolAPI, start: int = 1, last: int = -1, output: string = "./", name: string = "")
-proc getAllInfo*(self: ErocoolAPI): JsonNode
-proc getInfoBySpecifyingKey*(self: ErocoolAPI, key: string): JsonNode 
+proc getData*(self: ErocoolAPI): Data
 
-proc getInfoInJsonFormat(self: ErocoolAPI): JsonNode 
+proc getAllInfo*(self: Data): JsonNode
+proc getInfoBySpecifyingKey*(self: Data, key: string): JsonNode 
+proc getInfoInJsonFormat(self: Data): JsonNode 
 
 proc newScraper(url: string): Scraper
 proc newScraper(url: string, ua: string): Scraper 
@@ -65,8 +66,13 @@ proc download*(
     )
   )
 
-proc getAllInfo*(
+proc getData*(
   self: ErocoolAPI
+): Data =
+  return self.data
+
+proc getAllInfo*(
+  self: Data
 ): JsonNode =
   ## Obtain all information in JSON format.
   var 
@@ -74,7 +80,7 @@ proc getAllInfo*(
   return infomation
 
 proc getInfoBySpecifyingKey*(
-  self: ErocoolAPI,
+  self: Data,
   key: string
 ): JsonNode =
   ## Obtain information in JSON format by specifying a key.
@@ -83,25 +89,26 @@ proc getInfoBySpecifyingKey*(
   return infomation{key}
 
 proc getInfoInJsonFormat(
-  self: ErocoolAPI
+  self: Data
 ): JsonNode =
   var 
     infomation: JsonNode =
       %* {
-        "jaTitle": self.data.getJaTitle(),
-        "enTitle": self.data.getEnTitle(),
-        "uploadDate": self.data.getUploadDate(),
-        "lang": self.data.getLang(),
-        "thumbnail": self.data.getThumbnail(),
-        "url": self.data.getUrl(),
-        "artists": self.data.getArtists(),
-        "groups": self.data.getGroups(),
-        "parodies": self.data.getParodies(),
-        "tags": self.data.getTags(),
-        "imageList": self.data.getImageList(),
-        "totalPages": self.data.getTotalPages()
+        "jaTitle": self.getJaTitle(),
+        "enTitle": self.getEnTitle(),
+        "uploadDate": self.getUploadDate(),
+        "lang": self.getLang(),
+        "thumbnail": self.getThumbnail(),
+        "url": self.getUrl(),
+        "artists": self.getArtists(),
+        "groups": self.getGroups(),
+        "parodies": self.getParodies(),
+        "tags": self.getTags(),
+        "imageList": self.getImageList(),
+        "totalPages": self.getTotalPages()
       }
   return infomation
+
 
 proc newScraper(
   url: string
@@ -136,7 +143,9 @@ proc mangaDownload(
     data: Data = scraper.getData()
     
   if info:
+    echo data.getAllInfo().pretty()
     return
+  
   scraper.download(
     data,
     scraper.genDlOption(
