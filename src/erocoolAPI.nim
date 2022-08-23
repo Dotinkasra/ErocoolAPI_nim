@@ -20,7 +20,7 @@ proc getInfoInJsonFormat(self: ErocoolAPI): JsonNode
 
 proc newScraper(url: string): Scraper
 proc newScraper(url: string, ua: string): Scraper 
-proc mangaDownload(url: string, start: int = 1, last: int = -1, output: string = "./", name: string = "", ua: string = "")
+proc mangaDownload(start: int = 1, last: int = -1, output: string = "./", name: string = "", ua: string = "", info: bool = false, url: seq[string])
 
 ## ErocoolAPI doc
 
@@ -117,19 +117,26 @@ proc newScraper(
   return Scraper.new(ua = ua, url = url)
 
 proc mangaDownload(
-  url: string,
   start: int,
   last: int,
   output: string,
   name: string,
-  ua: string
+  ua: string,
+  info: bool,
+  url: seq[string]
 ) =
   ## Download the cartoon at the URL set in the constructor of the Scraper object.
+  if url.len == 0:
+    return
+
   let 
+    url: string = url[0]
     lastPageNum: Option[int] = if last > 0: some(last) else: none(int)
     scraper = if ua.isEmptyOrWhitespace: newScraper(url = url) else: newScraper(url = url, ua = ua)
     data: Data = scraper.getData()
-
+    
+  if info:
+    return
   scraper.download(
     data,
     scraper.genDlOption(
@@ -148,14 +155,15 @@ when isMainModule:
       "last": 'e',
       "output": 'o',
       "name": 'n',
-      "ua": 'u'
+      "ua": 'u',
+      "info": 'v'
     },
     help = {
-      "url": "URL of the contents",
       "start": "Specify the first page number to start downloading.",
       "last": "Specify the last page number to finish downloading.",
       "output": "Output directory",
       "name": "Directory name",
-      "ua": "User-Agent"
+      "ua": "User-Agent",
+      "info": "No download mode."
     }
   )
