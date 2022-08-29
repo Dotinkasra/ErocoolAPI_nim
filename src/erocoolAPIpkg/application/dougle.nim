@@ -3,12 +3,14 @@ import
   xmltree,
   strutils,
   nimquery,
+  logging,
   ../domain/data_entity
 
 proc extractData*(data: Data, xml: XmlNode): Data
 
 proc extractData*(data: Data, xml: XmlNode): Data =
-  echo "【dougle】extractData : start"
+  data.apiLog.log(lvlDebug, "【dougle】extractData : start")
+
   data.setJatitle(
     querySelectorAll(
       xml, "[class=\"single-post-title entry-title\"]"
@@ -32,5 +34,5 @@ proc extractData*(data: Data, xml: XmlNode): Data =
     if not href.isEmptyOrWhitespace(): imgList[i] = c.attr("href")
   if len(imgList) > 0:
     data.setImageList(imgList)
-  echo "【dougle】extractData : end"
+  data.apiLog.log(lvlDebug, "【dougle】extractData : end")
   return data
