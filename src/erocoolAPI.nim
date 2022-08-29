@@ -4,7 +4,8 @@ import
   json,
   erocoolAPIpkg/application/scraper,
   erocoolAPIpkg/domain/data_entity,
-  cligen
+  cligen,
+  logging
 
 type ErocoolAPI* = ref object
   scraper: Scraper
@@ -143,7 +144,7 @@ proc mangaDownload(
     data: Data = scraper.getData()
     
   if info:
-    echo data.getAllInfo().pretty()
+    data.apiLog.log(lvlInfo, data.getAllInfo().pretty())
     return
   
   scraper.download(

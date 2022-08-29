@@ -14,9 +14,13 @@ proc getImageLink(viewerUrl: string): Future[string] {.async,thread.}
 proc loopHandle(viewerUrl: string): string 
 
 proc extractData*(data: Data, xml: XmlNode): Data =
-  echo "【okHentai】extractData : start"
   data.setJatitle(
     findAll(xml, "h2")[0]
+    .innerText
+  )
+
+  data.setEntitle(
+    findAll(xml, "h1")[0]
     .innerText
   )
 
@@ -47,12 +51,10 @@ proc extractData*(data: Data, xml: XmlNode): Data =
     echo urlDomain & ^result
   data.setImageList(imageList)
 
-  echo "【okHentai】extractData : end"
   return data
 
 proc loopHandle(viewerUrl: string): string =
   let imgLink: string = waitFor getImageLink(viewerUrl)
-  echo "【okHentai】loopHandle : " & imgLink
   return imgLink
 
 proc getImageLink(viewerUrl: string): Future[string] {.async.} =

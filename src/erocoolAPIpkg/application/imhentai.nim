@@ -8,6 +8,7 @@ import
   streams,
   strutils,
   httpclient,
+  logging,
   ../domain/data_entity
 
 proc extractData*(data: Data, xml: XmlNode): Data
@@ -15,7 +16,7 @@ proc getImageLink(viewerUrl: string): Future[string] {.async,thread.}
 proc loopHandle(viewerUrl: string): string 
 
 proc extractData*(data: Data, xml: XmlNode): Data =
-  echo "【IMHentai】extractData : start"
+  data.apiLog.log(lvlDebug, "【IMHentai】extractData : start")
 
   let 
     urlDomain: string = "https://imhentai.xxx"
@@ -39,6 +40,7 @@ proc extractData*(data: Data, xml: XmlNode): Data =
     imageList = newSeq[string]()
 
   for i in 1..totalPages:
+    data.apiLog.log(lvlDebug, "【IMHentai】loopHandle : " & viewerUrl & $i & "/")
     thredsProcList.add(spawn loopHandle(viewerUrl & $i & "/"))
   sync()
 
@@ -47,12 +49,11 @@ proc extractData*(data: Data, xml: XmlNode): Data =
     echo ^result
   data.setImageList(imageList)
 
-  echo "【IMHentai】extractData : end"
+  data.apiLog.log(lvlDebug, "【IMHentai】extractData : end")
   return data
 
 proc loopHandle(viewerUrl: string): string =
   let imgLink: string = waitFor getImageLink(viewerUrl)
-  echo "【IMHentai】loopHandle : " & imgLink
   return imgLink
 
 proc getImageLink(viewerUrl: string): Future[string] {.async.} =
