@@ -1,5 +1,7 @@
 import 
-  data_values_infomation
+  data_values_infomation,
+  logging,
+  strutils
 
 type Data* = ref object
   ## An object that stores cartoon information.
@@ -16,8 +18,15 @@ type Data* = ref object
   imageList: ImageList
   totalPages: int
   saveImg*: proc(url: string, pathWithImgname: string)
+  apiLog*: ConsoleLogger
 
-proc new*(_:type Data,): Data = return Data()
+proc new*(_:type Data,): Data = 
+  return Data(
+    apiLog: newConsoleLogger(
+      levelThreshold = lvlDebug,
+      fmtStr = ""
+    )
+  )
 
 proc getJaTitle*(self: Data): string =
   return $self.jaTitle
@@ -56,7 +65,7 @@ proc getTotalPages*(self: Data): int =
   return len(self.imageList.value)
 
 proc setJatitle*(self: Data, n: string) =
-  self.jaTitle = JaTitle.new(n)
+  self.jaTitle = JaTitle.new(n.replace("/", "_"))
 
 proc setEnTitle*(self: Data, n: string) =
   self.enTitle = EnTitle.new(n)
