@@ -10,15 +10,16 @@ import
   sequtils,
   threadpool,
   nre,
+  logging,
   ../domain/data_entity
 
 proc getImageLink(url: string): Future[seq[string]] {.async.}
 proc loopHandle(xml: XmlNode): seq[string]
 proc extractData*(data: Data, xml: XmlNode): Data 
 proc loopExecuter(link: string): seq[string] {.thread.}
+var currentLogger {.global.}: ConsoleLogger
 
 proc getImageLink(url: string): Future[seq[string]] {.async.} =
-  echo "【e-hentai】getImageLink : " & url
   let 
     client = newAsyncHttpClient()
     body = await client.getContent(url)
@@ -37,11 +38,10 @@ proc getImageLink(url: string): Future[seq[string]] {.async.} =
       .querySelector("#img").attr("src")
     )
     client.close()
-  echo "【e-hentai】getImageLink : end"
   return linkList
 
 proc loopHandle(xml: XmlNode): seq[string] =
-  echo "【e-hentai】loopHandle"
+  currentLogger.log(lvlDebug, "【e-hentai】loopHandle")
   var 
     resultSeq = newSeq[FlowVar[seq[string]]]()
     imgLinks = newSeq[string]()
@@ -62,7 +62,7 @@ proc loopHandle(xml: XmlNode): seq[string] =
     else:
       for i in 1..lastPageNum:
         viewerLinks.add(baseLink & fmt"?p={i}")
-  echo viewerLinks
+  currentLogger.log(lvlDebug, viewerLinks)
 
   for viewer in viewerLinks.deduplicate:
     resultSeq.add(spawn loopExecuter(viewer))
@@ -75,7 +75,6 @@ proc loopHandle(xml: XmlNode): seq[string] =
   return imgLinks
   
 proc loopExecuter(link: string): seq[string] =
-  echo "【e-hentai】loopExecuter : start"
   var
     imgLinks = newSeq[string]()
   let 
@@ -83,11 +82,12 @@ proc loopExecuter(link: string): seq[string] =
   for img in results:
     if img.isEmptyOrWhitespace: continue
     imgLinks.add(img)
-  echo "【e-hentai】loopExecuter : end"
   return imgLinks
 
 proc extractData*(data: Data, xml: XmlNode): Data =
-  echo "【e-hentai】extractData : start"
+  currentLogger = data.apiLog
+  currentLogger.log(lvlDebug, "【e-hentai】extractData : start")
+
   data.setJatitle(
     querySelectorAll(xml, "#gj")[0]
     .innerText
@@ -116,6 +116,6 @@ proc extractData*(data: Data, xml: XmlNode): Data =
   #let allPages = xml.querySelector("body > div:nth-child(9) > table").querySelectorAll("tr")[0]
   let imgLinks: seq[string] = loopHandle(xml = xml)
   data.setImageList(imgLinks)
-  echo "【e-hentai】extractData : end"
+  currentLogger.log(lvlDebug, "【e-hentai】extractData : end")
   return data
 

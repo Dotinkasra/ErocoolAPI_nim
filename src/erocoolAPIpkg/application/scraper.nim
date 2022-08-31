@@ -4,14 +4,19 @@ import
   htmlparser,
   xmltree,
   streams,
+  nre,
+
   ../domain/data_entity,
   ../domain/data_values_infomation,
   dougle,
   ehentai,
   nijiero,
   imhentai,
-  nre,
+  okhentai,
+  logging,
   downloader
+
+var logger* = newConsoleLogger()
 
 type 
   Scraper* = ref object
@@ -23,7 +28,7 @@ type
 proc new*(_: type Scraper, ua: string = "Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101 Firefox/78.0", url: string): Scraper
 proc download*(self: Scraper, data: Data, dlOption: DownloadOption)
 proc genDlOption*(self: Scraper, absolutePath: string = "./", directoryName: string = "", start: int = 1, last: Option[int] = none(int)): DownloadOption
-proc getData*(self: Scraper): Data 
+proc getData*(self: Scraper, debug: bool): Data 
 
 template initData(data: Data) =
   data.setJatitle("")
@@ -38,22 +43,25 @@ template initData(data: Data) =
   data.setTags(newSeq[string]())
   data.setImageList(newSeq[string]())
 
-template selectData(d: Data, url: string, xml: XmlNode) =
+template selectData(data: Data, url: string, xml: XmlNode) =
   var instance {.inject.}: Data
   if url.contains(re"""https://dougle\.one/.*"""):
-    echo "【Dougle】"
+    data.apiLog.log(lvlDebug, "【Dougle】")
     instance = dougle.extractData(data, xml)
   elif url.contains(re"""https://e-hentai\.org.*"""):
-    echo "【ehentai】"
+    data.apiLog.log(lvlDebug, "【ehentai】")
     instance = ehentai.extractData(data, xml)
   elif url.contains(re"""https://erodoujin-search\.work/.*"""):
-    echo "【nijiero】"
+    data.apiLog.log(lvlDebug, "【nijiero】")
     instance = nijiero.extractData(data, xml)
   elif url.contains(re"""https://imhentai\.xxx/gallery/.*"""):
-    echo "【IMHentai】"
+    data.apiLog.log(lvlDebug, "【IMHentai】")
     instance = imhentai.extractData(data, xml)
+  elif url.contains(re"""https://okhentai\.net/gallery/.*"""):
+    data.apiLog.log(lvlDebug, "【okHentai】")
+    instance = okhentai.extractData(data, xml)
   else:
-    echo "サポートされていない"
+    data.apiLog.log(lvlError, "サポートされていない")
 
 proc new*(
   _: type Scraper,
@@ -95,11 +103,11 @@ proc genDlOption*(
     last: last
   )
 
-proc getData*(self: Scraper): Data =
+proc getData*(self: Scraper, debug: bool): Data =
   ## Obtain the results of parsing the URL cartoon.
-  let data: Data = Data.new()
+  let data: Data = Data.new(debug = debug)
   initData(data)
-  echo "【getData】 : " & self.url 
+  data.apiLog.log(lvlDebug, "【getData】 : " & self.url)
   data.setUrl(self.url)
   selectData(data, self.url, self.xml)
   return instance

@@ -1,14 +1,12 @@
 import 
   xmltree,
   nimquery,
-  nre,
   htmlparser,
   asyncdispatch,
   threadpool,
   streams,
   strutils,
   httpclient,
-  logging,
   ../domain/data_entity
 
 proc extractData*(data: Data, xml: XmlNode): Data
@@ -16,40 +14,43 @@ proc getImageLink(viewerUrl: string): Future[string] {.async,thread.}
 proc loopHandle(viewerUrl: string): string 
 
 proc extractData*(data: Data, xml: XmlNode): Data =
-  data.apiLog.log(lvlDebug, "【IMHentai】extractData : start")
+  data.setJatitle(
+    findAll(xml, "h2")[0]
+    .innerText
+  )
+
+  data.setEntitle(
+    findAll(xml, "h1")[0]
+    .innerText
+  )
 
   let 
-    urlDomain: string = "https://imhentai.xxx"
-    firstPageUrl: string = urlDomain & xml
-      .querySelector("div.row.gallery_first")
-      .findAll("a")[0]
-      .attr("href")
-
-    viewerUrl: string = firstPageUrl
-      .find(re"""(^https://imhentai\.xxx/view/\d+/).*/""")
-      .get
-      .captures[0]
-
-    totalPages:int = xml
-      .querySelector("#load_pages")
-      .attr("value")
-      .parseInt
+    urlDomain: string = "https://okhentai.net"
+    linkList = xml.querySelector("#list_pages").findAll("div")
     
   var 
     thredsProcList = newSeq[FlowVar[string]]()
     imageList = newSeq[string]()
+  
+  for i in linkList:
+    if i.findAll("div").len == 0:
+      continue
 
-  for i in 1..totalPages:
-    data.apiLog.log(lvlDebug, "【IMHentai】loopHandle : " & viewerUrl & $i & "/")
-    thredsProcList.add(spawn loopHandle(viewerUrl & $i & "/"))
+    thredsProcList.add(
+      spawn loopHandle(
+        urlDomain & i
+          .findAll("div")[0]
+          .findAll("a")[0]
+          .attr("href")
+      )
+    )
   sync()
 
   for result in thredsProcList:
-    imageList.add(^result)
-    echo ^result
+    imageList.add(urlDomain & ^result)
+    echo urlDomain & ^result
   data.setImageList(imageList)
 
-  data.apiLog.log(lvlDebug, "【IMHentai】extractData : end")
   return data
 
 proc loopHandle(viewerUrl: string): string =
@@ -64,7 +65,7 @@ proc getImageLink(viewerUrl: string): Future[string] {.async.} =
       .newStringStream()
       .parseHtml()
       .querySelector("#gimg")
-      .attr("data-src") 
+      .attr("src") 
   client.close()
   if imageSrc.isEmptyOrWhitespace: return ""
   return imageSrc

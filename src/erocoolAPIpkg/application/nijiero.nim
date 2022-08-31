@@ -3,12 +3,13 @@ import
   nimquery,
   sequtils,
   nre,
+  logging,
   ../domain/data_entity
 
 proc extractData*(data: Data, xml: XmlNode): Data
 
 proc extractData*(data: Data, xml: XmlNode): Data =
-  echo "【nijiero】extractData : start"
+  data.apiLog.log(lvlDebug, "【nijiero】extractData : start")
   data.setJatitle(
     querySelectorAll(
       xml, "head > title"
@@ -29,5 +30,5 @@ proc extractData*(data: Data, xml: XmlNode): Data =
       imgList.add(root & href)
   if len(imgList) > 0:
     data.setImageList(imgList.deduplicate)
-  echo "【nijiero】extractData : end"
+  data.apiLog.log(lvlDebug, "【nijiero】extractData : end")
   return data

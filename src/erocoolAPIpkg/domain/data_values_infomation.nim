@@ -1,6 +1,6 @@
 import 
-  random,
-  strutils,
+  #random,
+  #strutils,
   options
 
 #日本語タイトル処理
@@ -9,7 +9,8 @@ type JaTitle* = ref object
 
 proc new*(_: type JaTitle, n: string): JaTitle =
   return JaTitle(
-    value: if len(n) > 0: n else: intToStr(rand(int.high)) 
+    #value: if len(n) > 0: n else: intToStr(rand(int.high)) 
+    value: n
   )
 
 proc `$`*(self: JaTitle): string =
@@ -21,7 +22,8 @@ type EnTitle* = ref object
   
 proc new*(_: type EnTitle, n: string): EnTitle =
   return EnTitle(
-    value: if len(n) > 0: n else: intToStr(rand(int.high)) 
+    #value: if len(n) > 0: n else: intToStr(rand(int.high)) 
+    value: n
   )
 
 proc `$`*(self: EnTitle): string =

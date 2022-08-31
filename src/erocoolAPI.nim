@@ -4,34 +4,37 @@ import
   json,
   erocoolAPIpkg/application/scraper,
   erocoolAPIpkg/domain/data_entity,
-  cligen
+  cligen,
+  logging
 
 type ErocoolAPI* = ref object
   scraper: Scraper
   data: Data
 
-proc newErocoolAPI*(url: string, ua: string = ""): ErocoolAPI
+proc newErocoolAPI*(url: string, ua: string = "", debug: bool = false): ErocoolAPI
 proc reset*(self: ErocoolAPI, url: string)
-proc download*(self: ErocoolAPI, start: int = 1, last: int = -1, output: string = "./", name: string = "")
-proc getAllInfo*(self: ErocoolAPI): JsonNode
-proc getInfoBySpecifyingKey*(self: ErocoolAPI, key: string): JsonNode 
+proc download*(self: ErocoolAPI, start: int = 1, last: int = -1, output: string = "./", name: string = "", debug: bool = false)
+proc getData*(self: ErocoolAPI): Data
 
-proc getInfoInJsonFormat(self: ErocoolAPI): JsonNode 
+proc getAllInfo*(self: Data): JsonNode
+proc getInfoBySpecifyingKey*(self: Data, key: string): JsonNode 
+proc getInfoInJsonFormat(self: Data): JsonNode 
 
 proc newScraper(url: string): Scraper
 proc newScraper(url: string, ua: string): Scraper 
-proc mangaDownload(url: string, start: int = 1, last: int = -1, output: string = "./", name: string = "", ua: string = "")
+proc mangaDownload(start: int = 1, last: int = -1, output: string = "./", name: string = "", ua: string = "", info: bool = false, debug: bool = false, url: seq[string])
 
 ## ErocoolAPI doc
 
 proc newErocoolAPI*(
   url: string,
-  ua: string
+  ua: string,
+  debug: bool
 ): ErocoolAPI =
   ## Obtain a new object.
   let 
-    scraper = if ua.isEmptyOrWhitespace: Scraper.new(url = url) else: Scraper.new(ua = ua, url = url)
-    data = scraper.getData()
+    scraper: Scraper = if ua.isEmptyOrWhitespace: Scraper.new(url = url) else: Scraper.new(ua = ua, url = url)
+    data: Data = scraper.getData(debug = debug)
   new result
   result.scraper = scraper
   result.data = data
@@ -49,11 +52,12 @@ proc download*(
   last: int,
   output: string,
   name: string,
+  debug: bool
 ) = 
   ## Download the cartoon at the URL set in the constructor of the Scraper object.
   let 
     lastPageNum: Option[int] = if last > 0: some(last) else: none(int)
-    data: Data = self.scraper.getData()
+    data: Data = self.scraper.getData(debug = debug)
 
   self.scraper.download(
     data,
@@ -65,8 +69,13 @@ proc download*(
     )
   )
 
-proc getAllInfo*(
+proc getData*(
   self: ErocoolAPI
+): Data =
+  return self.data
+
+proc getAllInfo*(
+  self: Data
 ): JsonNode =
   ## Obtain all information in JSON format.
   var 
@@ -74,7 +83,7 @@ proc getAllInfo*(
   return infomation
 
 proc getInfoBySpecifyingKey*(
-  self: ErocoolAPI,
+  self: Data,
   key: string
 ): JsonNode =
   ## Obtain information in JSON format by specifying a key.
@@ -83,25 +92,26 @@ proc getInfoBySpecifyingKey*(
   return infomation{key}
 
 proc getInfoInJsonFormat(
-  self: ErocoolAPI
+  self: Data
 ): JsonNode =
   var 
     infomation: JsonNode =
       %* {
-        "jaTitle": self.data.getJaTitle(),
-        "enTitle": self.data.getEnTitle(),
-        "uploadDate": self.data.getUploadDate(),
-        "lang": self.data.getLang(),
-        "thumbnail": self.data.getThumbnail(),
-        "url": self.data.getUrl(),
-        "artists": self.data.getArtists(),
-        "groups": self.data.getGroups(),
-        "parodies": self.data.getParodies(),
-        "tags": self.data.getTags(),
-        "imageList": self.data.getImageList(),
-        "totalPages": self.data.getTotalPages()
+        "jaTitle": self.getJaTitle(),
+        "enTitle": self.getEnTitle(),
+        "uploadDate": self.getUploadDate(),
+        "lang": self.getLang(),
+        "thumbnail": self.getThumbnail(),
+        "url": self.getUrl(),
+        "artists": self.getArtists(),
+        "groups": self.getGroups(),
+        "parodies": self.getParodies(),
+        "tags": self.getTags(),
+        "imageList": self.getImageList(),
+        "totalPages": self.getTotalPages()
       }
   return infomation
+
 
 proc newScraper(
   url: string
@@ -117,19 +127,29 @@ proc newScraper(
   return Scraper.new(ua = ua, url = url)
 
 proc mangaDownload(
-  url: string,
   start: int,
   last: int,
   output: string,
   name: string,
-  ua: string
+  ua: string,
+  info: bool,
+  debug: bool,
+  url: seq[string]
 ) =
   ## Download the cartoon at the URL set in the constructor of the Scraper object.
+  if url.len == 0:
+    return
+
   let 
+    url: string = url[0]
     lastPageNum: Option[int] = if last > 0: some(last) else: none(int)
     scraper = if ua.isEmptyOrWhitespace: newScraper(url = url) else: newScraper(url = url, ua = ua)
-    data: Data = scraper.getData()
-
+    data: Data = scraper.getData(debug = debug)
+    
+  if info:
+    data.apiLog.log(lvlInfo, data.getAllInfo().pretty())
+    return
+  
   scraper.download(
     data,
     scraper.genDlOption(
@@ -148,14 +168,17 @@ when isMainModule:
       "last": 'e',
       "output": 'o',
       "name": 'n',
-      "ua": 'u'
+      "ua": 'u',
+      "info": 'v',
+      "debug": 'b'
     },
     help = {
-      "url": "URL of the contents",
       "start": "Specify the first page number to start downloading.",
       "last": "Specify the last page number to finish downloading.",
       "output": "Output directory",
       "name": "Directory name",
-      "ua": "User-Agent"
+      "ua": "User-Agent",
+      "info": "No download mode.",
+      "debug": "Do not output less than error logs."
     }
   )
