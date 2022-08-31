@@ -8,6 +8,7 @@ import
   threadpool,
   strutils,
   logging,
+  random,
   ../domain/data_entity,
   ../domain/data_values_infomation
 
@@ -52,7 +53,17 @@ proc download*(self: Downloader, dlOption: DownloadOption) =
     last = if dlOption.last.isSome: dlOption.last.get() else: self.data.getTotalPages()
 
     path: string = if absolutePath != "./": absolutePath else: "./"
-    name: string = if directoryName != "": directoryName else: self.data.getJaTitle()
+    name: string = 
+      if directoryName != "":
+        directoryName 
+      else:
+        if (self.data.getJaTitle() == "") and (self.data.getEnTitle() == ""):
+          intToStr(rand(int.high)) 
+        elif (self.data.getJaTitle() != ""):
+          self.data.getJaTitle()
+        else:
+          self.data.getEnTitle()
+          
     saveDir: string = os.joinPath(path, name)
 
     imageList: seq[string] = self.data.getImageList()
