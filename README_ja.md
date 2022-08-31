@@ -69,18 +69,20 @@ erocoolAPI 'https://ja.erocool.com/detail/xxxxxxx.html' --ua "Mozilla/5.0 (Macin
 その他
 
 ```bash
- $ ./erocoolapi -h
+ $ ./erocoolAPI -h
 Usage:
   mangaDownload [optional-params] [args: string...]
 Download the cartoon at the URL set in the constructor of the Scraper object.
 Options:
-  -h, --help                        print this cligen-erated help
+  -h, --help                        ヘルプを表示します
   --help-syntax                     advanced: prepend,plurals,..
-  -s=, --start=   int     1         Specify the first page number to start downloading.
-  -e=, --last=    int     -1        Specify the last page number to finish downloading.
-  -o=, --output=  string  "./"      Output directory
-  -n=, --name=    string  ""        Directory name
-  -u=, --ua=      string  ""        User-Agent
+  -s=, --start=   int     1         ダウンロードする漫画の開始番号を指定できます。
+  -e=, --last=    int     -1        ダウンロードする漫画の終了番号を指定できます。
+  -o=, --output=  string  "./"      出力先のディレクトリを指定できます。
+  -n=, --name=    string  ""        出力するディレクトリの名前を設定できます。
+  -u=, --ua=      string  ""        User-Agentを指定できます。
+  -v, --info      bool    false     ダウンロード処理を行わずに詳細のみ出力します。
+  -b, --debug     bool    false     デバッグ情報を出力します。
 ```
 
 ### Windowsで利用する場合
@@ -92,6 +94,8 @@ https://nim-lang.org/install_windows.html
 
 ## アップデート
 
+- **v0.1.51**   ダウンロード処理の改善。オプションを追加。
+- **v0.1.5**   okhentaiに対応。
 - **v0.1.4**   IMhentaiに対応。e-hentaiのダウンロード処理を改善。
 - **v0.1.3b**  e-hentaiのダウンロード速度を最大2倍に向上。  
 - **v0.1.3**   二次エロ画像サーチに対応。  

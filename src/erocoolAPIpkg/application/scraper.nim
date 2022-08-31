@@ -28,7 +28,7 @@ type
 proc new*(_: type Scraper, ua: string = "Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101 Firefox/78.0", url: string): Scraper
 proc download*(self: Scraper, data: Data, dlOption: DownloadOption)
 proc genDlOption*(self: Scraper, absolutePath: string = "./", directoryName: string = "", start: int = 1, last: Option[int] = none(int)): DownloadOption
-proc getData*(self: Scraper): Data 
+proc getData*(self: Scraper, debug: bool): Data 
 
 template initData(data: Data) =
   data.setJatitle("")
@@ -103,9 +103,9 @@ proc genDlOption*(
     last: last
   )
 
-proc getData*(self: Scraper): Data =
+proc getData*(self: Scraper, debug: bool): Data =
   ## Obtain the results of parsing the URL cartoon.
-  let data: Data = Data.new()
+  let data: Data = Data.new(debug = debug)
   initData(data)
   data.apiLog.log(lvlDebug, "【getData】 : " & self.url)
   data.setUrl(self.url)

@@ -11,9 +11,9 @@ type ErocoolAPI* = ref object
   scraper: Scraper
   data: Data
 
-proc newErocoolAPI*(url: string, ua: string = ""): ErocoolAPI
+proc newErocoolAPI*(url: string, ua: string = "", debug: bool = false): ErocoolAPI
 proc reset*(self: ErocoolAPI, url: string)
-proc download*(self: ErocoolAPI, start: int = 1, last: int = -1, output: string = "./", name: string = "")
+proc download*(self: ErocoolAPI, start: int = 1, last: int = -1, output: string = "./", name: string = "", debug: bool = false)
 proc getData*(self: ErocoolAPI): Data
 
 proc getAllInfo*(self: Data): JsonNode
@@ -22,18 +22,19 @@ proc getInfoInJsonFormat(self: Data): JsonNode
 
 proc newScraper(url: string): Scraper
 proc newScraper(url: string, ua: string): Scraper 
-proc mangaDownload(start: int = 1, last: int = -1, output: string = "./", name: string = "", ua: string = "", info: bool = false, url: seq[string])
+proc mangaDownload(start: int = 1, last: int = -1, output: string = "./", name: string = "", ua: string = "", info: bool = false, debug: bool = false, url: seq[string])
 
 ## ErocoolAPI doc
 
 proc newErocoolAPI*(
   url: string,
-  ua: string
+  ua: string,
+  debug: bool
 ): ErocoolAPI =
   ## Obtain a new object.
   let 
-    scraper = if ua.isEmptyOrWhitespace: Scraper.new(url = url) else: Scraper.new(ua = ua, url = url)
-    data = scraper.getData()
+    scraper: Scraper = if ua.isEmptyOrWhitespace: Scraper.new(url = url) else: Scraper.new(ua = ua, url = url)
+    data: Data = scraper.getData(debug = debug)
   new result
   result.scraper = scraper
   result.data = data
@@ -51,11 +52,12 @@ proc download*(
   last: int,
   output: string,
   name: string,
+  debug: bool
 ) = 
   ## Download the cartoon at the URL set in the constructor of the Scraper object.
   let 
     lastPageNum: Option[int] = if last > 0: some(last) else: none(int)
-    data: Data = self.scraper.getData()
+    data: Data = self.scraper.getData(debug = debug)
 
   self.scraper.download(
     data,
@@ -131,6 +133,7 @@ proc mangaDownload(
   name: string,
   ua: string,
   info: bool,
+  debug: bool,
   url: seq[string]
 ) =
   ## Download the cartoon at the URL set in the constructor of the Scraper object.
@@ -141,7 +144,7 @@ proc mangaDownload(
     url: string = url[0]
     lastPageNum: Option[int] = if last > 0: some(last) else: none(int)
     scraper = if ua.isEmptyOrWhitespace: newScraper(url = url) else: newScraper(url = url, ua = ua)
-    data: Data = scraper.getData()
+    data: Data = scraper.getData(debug = debug)
     
   if info:
     data.apiLog.log(lvlInfo, data.getAllInfo().pretty())
@@ -166,7 +169,8 @@ when isMainModule:
       "output": 'o',
       "name": 'n',
       "ua": 'u',
-      "info": 'v'
+      "info": 'v',
+      "debug": 'b'
     },
     help = {
       "start": "Specify the first page number to start downloading.",
@@ -174,6 +178,7 @@ when isMainModule:
       "output": "Output directory",
       "name": "Directory name",
       "ua": "User-Agent",
-      "info": "No download mode."
+      "info": "No download mode.",
+      "debug": "Do not output less than error logs."
     }
   )

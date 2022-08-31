@@ -20,10 +20,12 @@ type Data* = ref object
   saveImg*: proc(url: string, pathWithImgname: string)
   apiLog*: ConsoleLogger
 
-proc new*(_:type Data,): Data = 
+proc new*(_:type Data, debug: bool): Data = 
+  let 
+    level = if debug: lvlDebug else: lvlInfo
   return Data(
     apiLog: newConsoleLogger(
-      levelThreshold = lvlDebug,
+      levelThreshold = level,
       fmtStr = ""
     )
   )
@@ -68,7 +70,7 @@ proc setJatitle*(self: Data, n: string) =
   self.jaTitle = JaTitle.new(n.replace("/", "_"))
 
 proc setEnTitle*(self: Data, n: string) =
-  self.enTitle = EnTitle.new(n)
+  self.enTitle = EnTitle.new(n.replace("/", "_"))
 
 proc setUploadDate*(self: Data, n: string) =
   self.uploadDate = UploadDate.new(n)

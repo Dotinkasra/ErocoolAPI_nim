@@ -79,6 +79,8 @@ Options:
   -o=, --output=  string  "./"      Output directory
   -n=, --name=    string  ""        Directory name
   -u=, --ua=      string  ""        User-Agent
+  -v, --info      bool    false     No download mode.
+  -b, --debug     bool    false     Do not output less than error logs.
 ```
 
 ### For Windows users.
@@ -90,6 +92,8 @@ Alternatively, we recommend running binaries for Linux on WSLs.
 
 ## Update
 
+- **v0.1.51**  Improved download process. Added options.
+- **v0.1.5**   Support for okhentai.
 - **v0.1.4**   Support for IMhentai。Improved e-hentai download process.
 - **v0.1.3b**  Increased e-hentai download speed up to 2x.  
 - **v0.1.3**   Compatible with NIJIERO.  
