@@ -13,6 +13,7 @@ import
   nijiero,
   imhentai,
   okhentai,
+  kemono,
   logging,
   downloader
 
@@ -60,6 +61,9 @@ template selectData(data: Data, url: string, xml: XmlNode) =
   elif url.contains(re"""https://okhentai\.net/gallery/.*"""):
     data.apiLog.log(lvlDebug, "【okHentai】")
     instance = okhentai.extractData(data, xml)
+  elif url.contains(re"""https://kemono\.party/.*"""):
+    data.apiLog.log(lvlDebug, "【kemono】")
+    instance = kemono.extractData(data, xml)
   else:
     data.apiLog.log(lvlError, "サポートされていない")
 
