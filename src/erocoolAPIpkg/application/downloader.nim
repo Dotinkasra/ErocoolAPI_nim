@@ -27,14 +27,14 @@ proc asyncRequest(self: Downloader, url: string, pathWithImgname: string): Futur
   self.data.apiLog.log(lvlDebug, "【downloader】asyncRequest : " & url)
   let 
     client = newHttpClient()
-    img = client.getContent(url)
-  self.data.apiLog.log(lvlDebug, "【downloader】asyncRequest : Complete " & pathWithImgname)
-  client.close()
-  let 
     f = openAsync(pathWithImgname, FileMode.fmWrite)
   try:
+    let 
+      img = client.getContent(url)
+    client.close()
     await f.write(img)
-    self.data.apiLog.log(lvlDebug, "【downloader】asyncRequest : Save Complate ")
+
+    self.data.apiLog.log(lvlDebug, "【downloader】asyncRequest : Save Complete " & pathWithImgname)
     return true
   except:
     self.data.apiLog.log(lvlError, "【downloader】Download error!\n" & getCurrentExceptionMsg())
@@ -50,7 +50,7 @@ proc download*(self: Downloader, dlOption: DownloadOption) =
     absolutePath: string = dlOption.absolutePath
     directoryName: string = dlOption.directoryName
     start: int = dlOption.start
-    last = if dlOption.last.isSome: dlOption.last.get() else: self.data.getTotalPages()
+    last: int = if dlOption.last.isSome: dlOption.last.get() else: self.data.getTotalPages()
 
     path: string = if absolutePath != "./": absolutePath else: "./"
     name: string = 
@@ -77,6 +77,7 @@ proc download*(self: Downloader, dlOption: DownloadOption) =
     os.createDir(saveDir)
 
   var index: int = 1
+  echo repr(imageList)
   for i in start - 1..last - 1:
     try:
       if imageList[i].isEmptyOrWhitespace: continue
@@ -84,7 +85,7 @@ proc download*(self: Downloader, dlOption: DownloadOption) =
       self.data.apiLog.log(lvlError,  "Error!\n" & getCurrentExceptionMsg())
       continue
     let 
-      urlInFilename: Option[nre.RegexMatch] = imageList[i].find(re"""https?://.*/(.*jpg|.*png).*""")
+      urlInFilename: Option[nre.RegexMatch] = imageList[i].find(re"""https?://.*/(.*jpg|.*png|.*webp|.*gif|.*avif).*""")
     if urlInFilename.isNone() or len(urlInFilename.get.captures.toSeq()) == 0: continue
 
     let 
@@ -97,7 +98,6 @@ proc download*(self: Downloader, dlOption: DownloadOption) =
 
     inc index
     self.data.apiLog.log(lvlDebug, "【downloader】" & $(i + 1) & " : " & fileName)
-    #discard spawn self.asyncRequest(url = imageList[i], pathWithImgname = pathWithImgname)
     thredsProcList.add(
       spawn self.loopHandle(url = imageList[i], pathWithImgname = pathWithImgname)
     )
