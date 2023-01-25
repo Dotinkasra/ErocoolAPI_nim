@@ -27,7 +27,7 @@ proc getImageLink(url: string): Future[seq[string]] {.async.} =
     imagePageDiv = xml.querySelectorAll("div.gdtm")
   var 
     linkList: seq[string] = newSeq[string]()
-  
+  echo imagePageDiv
   for page in imagePageDiv:
     let link = page.querySelectorAll("a")
     if len(link) == 0: continue
@@ -38,6 +38,7 @@ proc getImageLink(url: string): Future[seq[string]] {.async.} =
       .querySelector("#img").attr("src")
     )
     client.close()
+  echo repr(linkList)
   return linkList
 
 proc loopHandle(xml: XmlNode): seq[string] =
@@ -47,13 +48,20 @@ proc loopHandle(xml: XmlNode): seq[string] =
     imgLinks = newSeq[string]()
     viewerLinks = newSeq[string]()
   let
-    tds: seq[XmlNode] = xml.querySelector("body > div:nth-child(9) > table").querySelectorAll("tr")[0].querySelectorAll("td")
+    table: XmlNode = xml.querySelector("body > div:nth-child(10) > table")
+  echo repr(table)
+  echo table
+  
+  let
+    tr: seq[XmlNode] = table.querySelectorAll("tr")
+    tds: seq[XmlNode] = tr[0].querySelectorAll("td")
+
+  let
     baseLink: string = tds[1].querySelectorAll("a")[0].attr("href")
     lastPageLink: string = tds[tds.len - 2].querySelectorAll("a")[0].attr("href")
     lastPage = lastPageLink.find(re"""https://e-hentai\.org/g/.*/?p=(\d+)""")
     #finalNum: int = final.find(re(pettern)).get.captures[0].parseInt
   viewerLinks.add(baseLink)
-
   if lastPage.isSome() and len(lastPage.get.captures.toSeq()) >= 1: 
     let 
       lastPageNum: int = lastPage.get.captures[0].parseInt
